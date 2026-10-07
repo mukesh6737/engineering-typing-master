@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Engineering Typing Master</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f6fb;--card:#fff;--ink:#0f1b3d;--mute:#5d6a8a;--line:#dbe1ef;--blue:#2f5bea;--pur:#7c4dff;--ok:#1a9a5b;--bad:#d93a4a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1230;--card:#111c44;--ink:#eaf0ff;--mute:#93a1c9;--line:#243063;--blue:#6c8cff;--pur:#a98bff;--ok:#43d68f;--bad:#ff6b7a}}
+:root[data-theme="dark"]{--bg:#0a1230;--card:#111c44;--ink:#eaf0ff;--mute:#93a1c9;--line:#243063;--blue:#6c8cff;--pur:#a98bff;--ok:#43d68f;--bad:#ff6b7a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+button,select,input{font:inherit;color:inherit}
+header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.logo{font-weight:700;font-size:18px;margin-right:auto;letter-spacing:-.02em}
+nav{display:flex;flex-wrap:wrap;gap:4px}
+nav button,.btn{border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 14px;cursor:pointer}
+nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+.btn.p{background:linear-gradient(135deg,var(--blue),var(--pur));border:0;color:#fff;font-weight:600}
+.btn:focus-visible,nav button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--pur);outline-offset:2px}
+main{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
+h1{font-size:clamp(30px,6vw,52px);line-height:1.05;margin:8px 0 10px;letter-spacing:-.03em}
+h2{margin:28px 0 12px;font-size:22px}
+.sub{color:var(--mute);max-width:56ch}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat b{display:block;font-size:28px;letter-spacing:-.02em}
+.stat span{color:var(--mute);font-size:14px}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 12px;margin:3px 4px 3px 0;cursor:pointer;background:transparent;font-size:14px}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+select,input[type=search]{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.view{display:none}.view.on{display:block}
+#box{font:22px/1.8 "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;height:190px;overflow:hidden;position:relative;padding:14px 18px;border:1px solid var(--line);border-radius:14px;background:var(--card);cursor:text;word-break:break-word}
+#box span.c{color:var(--ok)}#box span.w{color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent)}
+#box span.u{color:var(--mute)}#box span.cur{border-left:2px solid var(--pur);margin-left:-2px;color:var(--ink)}
+#ta{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
+.bar{height:8px;border-radius:8px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--pur))}
+.words .bad{color:var(--bad);font-weight:600}
+.ach{opacity:.4}.ach.got{opacity:1;border-color:var(--pur)}
+.drop{border:2px dashed var(--line);border-radius:16px;padding:36px;text-align:center;cursor:pointer}
+.drop.over{border-color:var(--pur);background:color-mix(in srgb,var(--pur) 8%,transparent)}
+svg text{fill:var(--mute);font-size:11px}
+@media (max-width:600px){#box{font-size:18px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Engineering Typing Master</div>
+  <nav id="nav">
+    <button data-v="home" class="on">Dashboard</button>
+    <button data-v="lib">Subjects</button>
+    <button data-v="pdf">My PDF</button>
+    <button data-v="prog">Progress</button>
+  </nav>
+  <button class="btn" id="theme" aria-label="Toggle light or dark mode">Theme</button>
+</header>
+<main>
+
+<section class="view on" id="v-home">
+  <h1>Type faster. Learn your syllabus.</h1>
+  <p class="sub">Every passage comes from an engineering subject or your own notes, so each minute of practice also revises what you need to know.</p>
+  <div class="row" style="margin:16px 0">
+    <button class="btn p" id="goDaily">Start today's challenge</button>
+    <button class="btn" data-go="lib">Choose a subject</button>
+    <button class="btn" data-go="pdf">Upload a PDF</button>
+  </div>
+  <div class="grid" id="stats"></div>
+  <h2>Continue learning</h2>
+  <div class="sg" id="cont"></div>
+  <h2>Daily challenge</h2>
+  <div class="card" id="daily"></div>
+</section>
+
+<section class="view" id="v-lib">
+  <h2 style="margin-top:0">Engineering subject library</h2>
+  <div class="row" style="margin-bottom:14px">
+    <select id="fb" aria-label="Branch"><option value="">All branches</option><option>CSE</option><option>B.Tech Common</option></select>
+    <select id="fs" aria-label="Semester"><option value="">All semesters</option></select>
+    <input type="search" id="q" placeholder="Search subject or topic" aria-label="Search">
+  </div>
+  <div class="sg" id="subs"></div>
+</section>
+
+<section class="view" id="v-type">
+  <div id="setup" class="card">
+    <h2 style="margin-top:0" id="sTitle"></h2>
+    <p class="sub" id="sSub"></p>
+    <div class="row" style="margin:12px 0">
+      <label>Difficulty <select id="dif"><option value="easy">Easy</option><option value="medium" selected>Medium</option><option value="hard">Hard</option></select></label>
+      <label>Length <select id="len"><option value="50">50 words</option><option value="100" selected>100 words</option><option value="200">200 words</option><option value="500">500 words</option><option value="1000">1000 words</option><option value="2000">2000 words</option></select></label>
+      <label>Time <select id="tim"><option value="60" selected>1 minute</option><option value="180">3 minutes</option><option value="300">5 minutes</option><option value="600">10 minutes</option><option value="1800">30 minutes</option></select></label>
+    </div>
+    <button class="btn p" id="startBtn">Start typing</button>
+  </div>
+  <div id="test" style="display:none">
+    <div class="row" style="justify-content:space-between;margin-bottom:10px"><div><b id="tSub"></b><div class="sub" id="tMeta"></div></div><div style="font-size:34px;font-weight:700" id="clock">01:00</div></div>
+    <div class="grid" style="margin-bottom:12px">
+      <div class="card stat"><b id="lw">0</b><span>WPM</span></div><div class="card stat"><b id="la">100%</b><span>Accuracy</span></div>
+      <div class="card stat"><b id="le">0</b><span>Errors</span></div><div class="card stat"><b id="lc">0</b><span>Characters</span></div>
+    </div>
+    <div id="box" tabindex="0" aria-label="Typing area. Click and start typing."></div>
+    <textarea id="ta" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Typing input"></textarea>
+    <p class="sub">Click the text and start typing. The timer begins with your first key. Esc cancels.</p>
+  </div>
+  <div id="result" class="card" style="display:none">
+    <h2 style="margin-top:0">Test complete</h2>
+    <div class="grid" id="rStats"></div>
+    <div class="words" style="margin:14px 0" id="rWords"></div>
+    <div class="row">
+      <button class="btn p" id="again">Try again</button>
+      <button class="btn" id="mist">Practice my mistakes</button>
+      <button class="btn" id="next">Next topic</button>
+      <button class="btn" data-go="home">Back to dashboard</button>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="v-pdf">
+  <h2 style="margin-top:0">Turn your notes into typing practice</h2>
+  <p class="sub">Upload a PDF, or photos of handwritten or printed pages. Typed PDFs are read in your browser. Scanned pages, photos and handwriting are sent to Claude to be read, using your Claude account, after you approve.</p>
+  <label class="drop" id="drop" style="display:block"><b>Drop a PDF or photos here</b><br>Typed PDFs, scanned PDFs, handwritten notes and photos all work<br>or click to choose files<input type="file" id="file" accept="application/pdf,image/*" multiple hidden></label>
+  <p id="pmsg" class="sub"></p>
+  <div id="pinfo"></div>
+</section>
+
+<section class="view" id="v-prog">
+  <h2 style="margin-top:0">Your progress</h2>
+  <div class="grid" id="pstats"></div>
+  <h2>Speed over your last 20 tests</h2>
+  <div class="card" id="chart"></div>
+  <h2>Engineering typing score</h2>
+  <div class="card" id="score"></div>
+  <h2>Achievements</h2>
+  <div class="grid" id="achs"></div>
+  <p><button class="btn" id="reset">Clear my data</button></p>
+</section>
+
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// ---- content: [branch, semester, subject, [[topic, [sentences], keyTerms]]] ----
+const D=[
+["CSE",3,"Data Structures and Algorithms",[
+ ["Linked Lists",["A linked list is a linear data structure in which elements are stored in nodes.","Each node holds data and a reference to the next node in the sequence.","Insertion at the head takes constant time because only one pointer changes.","Searching requires traversal from the head, which takes linear time."],"node, pointer, traversal, head, tail"],
+ ["Sorting and Searching",["Binary search finds an item in a sorted array by repeatedly halving the search range.","Bubble sort swaps adjacent elements that are out of order and takes quadratic time.","Merge sort divides the array, sorts each half and merges them in n log n time.","Quick sort partitions the array around a pivot and sorts the parts recursively."],"pivot, partition, merge, swap, comparison"],
+ ["Stacks and Queues",["A stack follows the last in, first out rule, so the newest element leaves first.","A queue follows the first in, first out rule, so the oldest element leaves first.","Push and pop on a stack run in constant time when implemented with an array.","Queues power breadth first search and operating system job scheduling."],"push, pop, enqueue, dequeue, overflow"],
+ ["Binary Trees",["A binary tree is a hierarchy where every node has at most two children.","Inorder traversal of a binary search tree visits the keys in sorted order.","A balanced tree keeps its height close to log n, so lookups stay fast.","An AVL tree restores balance with rotations after each insertion."],"inorder, preorder, height, rotation, subtree"]]],
+["CSE",4,"Database Management Systems",[
+ ["Normalization",["Normalization organizes a relational schema to reduce redundancy and update anomalies.","A table is in first normal form when every attribute holds only atomic values.","Second normal form removes partial dependencies on a composite primary key.","Third normal form removes transitive dependencies between non key attributes."],"anomaly, dependency, atomic, schema, decomposition"],
+ ["Transactions",["A transaction is a unit of work that must either complete fully or not at all.","Atomicity, consistency, isolation and durability together are called the ACID properties.","Locking protocols such as two phase locking ensure serializable schedules.","A deadlock occurs when transactions wait on each other forever."],"atomicity, isolation, durability, commit, rollback"]]],
+["CSE",4,"Operating Systems",[
+ ["CPU Scheduling",["Process scheduling is the activity of selecting a process from the ready queue.","First come first served is simple but a long job can delay every short job behind it.","Round robin gives each process a fixed time quantum to share the processor fairly.","Shortest job first minimizes average waiting time but needs burst time estimates."],"quantum, preemption, throughput, turnaround, dispatcher"],
+ ["Memory Management",["Paging divides physical memory into fixed size frames and logical memory into pages.","A page table maps each logical page number to a physical frame number.","A page fault occurs when a process accesses a page that is not in memory.","Virtual memory lets programs run even when they are larger than physical memory."],"paging, segmentation, thrashing, frame, swapping"]]],
+["CSE",5,"Computer Networks",[
+ ["TCP and UDP",["TCP provides reliable, ordered delivery by using acknowledgements and retransmission.","A three way handshake establishes a TCP connection before any data is sent.","UDP is connectionless and trades reliability for lower latency.","Congestion control keeps a sender from overwhelming the network."],"handshake, segment, latency, congestion, socket"],
+ ["IP Addressing",["An IPv4 address is a thirty two bit number written as four decimal octets.","A subnet mask separates the network portion of an address from the host portion.","Routers forward packets by matching the destination against entries in a routing table.","IPv6 uses one hundred twenty eight bit addresses to solve address exhaustion."],"subnet, router, gateway, prefix, packet"]]],
+["CSE",3,"Java Programming",[
+ ["Object Oriented Concepts",["Encapsulation bundles data and the methods that operate on it inside a class.","Inheritance lets a subclass reuse and extend the behavior of a superclass.","Polymorphism allows one interface to be implemented by many different classes.","An abstract class cannot be instantiated and may declare methods without bodies."],"inheritance, polymorphism, interface, abstraction, constructor"],
+ ["Exception Handling",["An exception is an event that disrupts the normal flow of a program.","Code that may fail is placed in a try block and handled in a catch block.","The finally block runs whether or not an exception was thrown.","Checked exceptions must be declared or handled, but unchecked exceptions need not be."],"throw, throws, catch, finally, runtime"]]],
+["CSE",5,"Machine Learning",[
+ ["Supervised Learning",["Supervised learning trains a model on labeled examples to predict outputs for new inputs.","Linear regression fits a line that minimizes the squared error between predictions and targets.","Overfitting happens when a model memorizes noise instead of learning the underlying pattern.","Cross validation estimates how well a model will generalize to unseen data."],"regression, classification, overfitting, gradient, validation"]]],
+["B.Tech Common",1,"Engineering Mathematics I and II",[
+ ["Calculus",["A derivative measures how fast a function changes at a point.","The chain rule differentiates a composite function by multiplying the derivatives of its parts.","A definite integral gives the area under a curve between two limits.","A Taylor series approximates a function near a point using its derivatives."],"limit, derivative, integral, series, continuity"],
+ ["Matrices",["A matrix is a rectangular array of numbers arranged in rows and columns.","The determinant of a square matrix tells us whether the matrix is invertible.","An eigenvector keeps its direction when the matrix transformation is applied to it.","The rank of a matrix is the number of linearly independent rows."],"determinant, eigenvalue, rank, inverse, transpose"],
+ ["Differential Equations",["A differential equation relates a function to its derivatives.","The order of an equation is the highest derivative that appears in it.","Separable equations can be solved by integrating each variable on its own side.","A linear first order equation is solved using an integrating factor."],"derivative, integral, solution, order, homogeneous"]]],
+["B.Tech Common",2,"Basic Electrical and Electronics Engineering",[
+ ["Circuit Laws",["Ohm's law states that voltage across a resistor equals current multiplied by resistance.","Kirchhoff's current law says the currents entering a node sum to zero.","Kirchhoff's voltage law says the voltages around any closed loop sum to zero.","Resistors in series add directly, while resistors in parallel add as reciprocals."],"voltage, current, resistance, node, loop"]]],
+["CSE",3,"Digital Logic and Design",[
+ ["Logic Gates",["A logic gate performs a Boolean operation on one or more binary inputs.","The NAND gate is universal because any other gate can be built from it.","A multiplexer selects one of many input lines and forwards it to a single output.","A flip flop stores one bit and changes state on a clock edge."],"boolean, multiplexer, flip flop, clock, truth table"]]],
+["B.Tech Common",1,"Engineering Physics and Physics Lab",[
+ ["Waves and Optics",["Interference occurs when two coherent waves overlap and their amplitudes add.","In Young's double slit experiment, bright fringes appear where the path difference is a whole number of wavelengths.","Diffraction is the bending of light around an obstacle or through a narrow opening.","A laser produces coherent light through stimulated emission of radiation."],"coherence, fringe, diffraction, wavelength, polarization"],
+ ["Quantum Mechanics Basics",["Light and matter show both wave and particle behavior, which is called duality.","The de Broglie wavelength of a particle equals Planck's constant divided by its momentum.","The uncertainty principle limits how precisely position and momentum can be known together.","The Schrodinger equation describes how the wave function of a system changes with time."],"photon, wavefunction, momentum, uncertainty, quantum"]]],
+["B.Tech Common",1,"Engineering Chemistry and Chemistry Lab",[
+ ["Water and Corrosion",["Hard water contains dissolved calcium and magnesium salts that form scale in boilers.","Hardness is measured by titration with a standard EDTA solution.","Corrosion is the gradual destruction of a metal by chemical or electrochemical reaction.","Galvanizing protects iron by coating it with a layer of zinc."],"hardness, titration, electrode, oxidation, galvanizing"]]],
+["B.Tech Common",1,"Programming for Problem Solving",[
+ ["C Programming Basics",["A C program begins execution from the main function.","Variables must be declared with a data type such as int, float or char before use.","A for loop repeats a block of statements a fixed number of times.","Pointers store the memory address of another variable and allow indirect access."],"variable, loop, array, function, pointer"],
+ ["Python Basics",["Python is an interpreted language that uses indentation to define code blocks.","A list is an ordered, changeable collection that can hold items of different types.","A function is defined with the def keyword and returns a value with return.","Dictionaries store data as key and value pairs for fast lookup."],"indentation, list, dictionary, function, interpreter"]]],
+["B.Tech Common",1,"Engineering Graphics and Workshop Practice",[
+ ["Projections and Workshop",["Orthographic projection shows an object through its front, top and side views.","The first angle method places the object between the observer and the plane of projection.","A dimension line shows the size of a feature and ends with arrowheads.","Fitting, carpentry, welding and sheet metal are the common trades taught in workshop practice."],"projection, scale, sectional view, welding, fitting"]]],
+["B.Tech Common",2,"Technical English and Professional Communication",[
+ ["Technical Writing",["Technical writing explains complex information clearly to a specific audience.","A good report has a title, summary, body, conclusion and list of references.","Use short sentences and active voice so that instructions are easy to follow.","A professional email states its purpose in the first line and ends with a clear request."],"audience, summary, report, clarity, proofreading"]]],
+["B.Tech Common",2,"Environmental Science and Engineering",[
+ ["Ecosystems and Pollution",["An ecosystem is a community of living things interacting with their physical environment.","Energy flows through a food chain from producers to consumers and decomposers.","Air pollution comes from vehicles, industries and the burning of fossil fuels.","Sustainable development meets present needs without harming the ability of future generations to meet theirs."],"ecosystem, biodiversity, emission, renewable, sustainability"]]],
+["CSE",3,"Discrete Mathematics and Graph Theory",[
+ ["Sets, Logic and Graphs",["A set is a well defined collection of distinct objects.","A proposition is a statement that is either true or false but never both.","A graph consists of vertices connected by edges.","A tree is a connected graph that contains no cycles."],"proposition, relation, vertex, edge, induction"]]],
+["CSE",3,"Object Oriented Programming with C++",[
+ ["Classes and Objects",["A class is a blueprint, and an object is an instance created from that blueprint.","A constructor runs automatically when an object is created.","Function overloading lets several functions share a name but take different parameters.","Virtual functions enable runtime polymorphism through base class pointers."],"class, object, constructor, overloading, virtual"]]],
+["CSE",4,"Computer Organization and Architecture",[
+ ["CPU and Pipelining",["The central processing unit fetches, decodes and executes instructions in a repeating cycle.","A register is a small, very fast storage location inside the processor.","Pipelining overlaps the stages of several instructions to raise throughput.","A cache stores recently used data close to the processor to reduce memory access time."],"register, pipeline, cache, hazard, instruction set"]]],
+["CSE",4,"Principles of Programming Languages",[
+ ["Language Concepts",["A programming language is defined by its syntax and its semantics.","Static typing checks types at compile time, while dynamic typing checks them at run time.","Scope rules decide where in a program a name can be used.","Functional languages treat functions as values and avoid changing state."],"syntax, semantics, binding, scope, paradigm"]]],
+["CSE",4,"Probability, Statistics and Stochastic Processes",[
+ ["Probability Basics",["Probability measures how likely an event is, on a scale from zero to one.","Conditional probability gives the chance of an event once another event is known to have happened.","Bayes theorem updates a belief using new evidence.","The mean describes the center of a data set and the standard deviation describes its spread."],"random variable, distribution, expectation, variance, Markov chain"]]],
+["CSE",5,"Design and Analysis of Algorithms",[
+ ["Complexity and Strategies",["Big O notation describes how running time grows as the input size grows.","Divide and conquer splits a problem into smaller parts and combines their solutions.","Dynamic programming stores the answers to overlapping subproblems to avoid repeated work.","A greedy algorithm makes the best local choice at every step."],"asymptotic, recurrence, greedy, memoization, optimal"]]],
+["CSE",5,"Software Engineering and Project Lab",[
+ ["Process Models",["The waterfall model completes each phase fully before the next one begins.","Agile development delivers working software in short iterations and welcomes changing requirements.","A requirements document states what the system must do and under which constraints.","Testing finds defects, and unit, integration and system tests check different levels of the software."],"requirement, agile, sprint, testing, maintenance"]]],
+["CSE",5,"Theory of Computation",[
+ ["Automata and Languages",["A finite automaton is a machine with a finite set of states that reads an input string.","A regular expression describes a pattern that a finite automaton can recognize.","A pushdown automaton adds a stack and can recognize context free languages.","A Turing machine reads and writes on an infinite tape and models any computable function."],"state, alphabet, grammar, Turing machine, decidable"]]],
+["CSE",5,"Microprocessors and Microcontrollers",[
+ ["8086 and Microcontrollers",["A microprocessor is a single chip that contains the central processing unit.","The 8086 is a sixteen bit processor with a segmented memory model.","A microcontroller combines a processor, memory and input and output ports on one chip.","An interrupt pauses the running program so the processor can serve an urgent event."],"interrupt, register, segment, port, assembly"]]],
+["CSE",6,"Compiler Design",[
+ ["Phases of a Compiler",["A compiler translates source code written in a high level language into machine code.","The lexical analyzer reads characters and groups them into tokens.","The parser checks that the tokens follow the grammar of the language and builds a parse tree.","Optimization improves the generated code without changing what it does."],"lexer, token, parser, grammar, code generation"]]],
+["CSE",6,"Web Technologies",[
+ ["HTML, CSS and JavaScript",["HTML gives a web page its structure, and CSS controls how it looks.","JavaScript adds behavior and runs inside the browser.","The box model describes the content, padding, border and margin around every element.","A REST API lets a web page request data from a server using standard HTTP methods."],"element, selector, DOM, request, responsive"]]],
+["CSE",6,"Artificial Intelligence Essentials",[
+ ["Search and Agents",["An intelligent agent perceives its environment and acts to achieve its goals.","Breadth first search explores all nodes at one depth before moving deeper.","The A star algorithm uses a heuristic to find the cheapest path efficiently.","Knowledge representation stores facts in a form that a program can reason about."],"agent, heuristic, search, inference, knowledge base"]]],
+["CSE",6,"Open and Departmental Electives I",[
+ ["Cyber Security",["Confidentiality, integrity and availability are the three goals of information security.","Encryption turns readable data into ciphertext that only a key holder can read.","A firewall filters network traffic according to a set of security rules.","Phishing tricks people into giving away passwords by pretending to be a trusted sender."],"encryption, firewall, authentication, malware, phishing"],
+ ["Cloud Computing",["Cloud computing delivers computing resources over the internet on demand.","Infrastructure, platform and software as a service are the three main service models.","Virtualization lets many virtual machines share one physical server.","Elastic scaling adds or removes resources as the workload changes."],"virtualization, scalability, storage, instance, deployment"],
+ ["Data Mining",["Data mining finds useful patterns in very large data sets.","Clustering groups similar records without using labels.","Association rules reveal items that are often bought together.","Data must be cleaned and prepared before any mining algorithm is applied."],"clustering, association, preprocessing, pattern, outlier"]]]
+];
+const ALL=[];D.forEach(([b,s,sub,ts])=>ts.forEach(([t,x,k])=>ALL.push({b,s,sub,t,x,k,key:sub+'|'+t})));
+// ---- storage ----
+let S={results:[]},mem=null;
+try{S=JSON.parse(localStorage.getItem('etm')||'{"results":[]}')}catch(e){}
+try{mem=JSON.parse(localStorage.getItem('etmpdf')||'null')}catch(e){}
+const save=()=>{try{localStorage.setItem('etm',JSON.stringify(S))}catch(e){}};
+let PDF=mem;
+// ---- navigation ----
+function go(v){$$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
+ $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+ if(v==='home')renderHome();if(v==='prog')renderProg();if(v==='lib')renderLib();scrollTo(0,0)}
+$$('#nav button').forEach(b=>b.onclick=()=>{stop();go(b.dataset.v)});
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){stop();go(g.dataset.go)}});
+$('#theme').onclick=()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=d?'light':'dark'};
+// ---- stats helpers ----
+const R=()=>S.results;
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const day=t=>new Date(t).toDateString();
+function streak(){const ds=new Set(R().map(r=>day(r.t)));let n=0,d=new Date();if(!ds.has(d.toDateString()))d.setDate(d.getDate()-1);while(ds.has(d.toDateString())){n++;d.setDate(d.getDate()-1)}return n}
+const done=()=>new Set(R().filter(r=>r.acc>=90&&r.key&&r.key[0]!=='#').map(r=>r.key)).size;
+function stat(n,l){return `<div class="card stat"><b>${n}</b><span>${l}</span></div>`}
+function statsHTML(){const r=R(),m=Math.round(r.reduce((a,x)=>a+x.dur,0)/60);
+ return stat(r.length?r[r.length-1].wpm:0,'Current WPM')+stat(Math.max(0,...r.map(x=>x.wpm)),'Best WPM')+stat(Math.round(avg(r.map(x=>x.acc)))+'%','Average accuracy')+stat(m+' min','Practice time')+stat(r.reduce((a,x)=>a+x.words,0),'Words typed')+stat(done(),'Topics completed')}
+// ---- dashboard ----
+function dailyTopic(){const d=new Date();return ALL[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%ALL.length]}
+function renderHome(){$('#stats').innerHTML=statsHTML();
+ const best={};R().forEach(r=>{if(r.key[0]!=='#'&&(!best[r.key]||r.acc>best[r.key].acc))best[r.key]=r});
+ const rec=[...new Set(R().filter(r=>r.key[0]!=='#').map(r=>r.key).reverse())].slice(0,3);
+ $('#cont').innerHTML=rec.length?rec.map(k=>{const t=ALL.find(a=>a.key===k),b=best[k];if(!t)return '';return `<div class="card"><b>${esc(t.sub)}</b><div class="sub">${esc(t.t)}</div><div class="bar" style="margin:10px 0"><i style="width:${Math.min(100,b.acc)}%"></i></div><button class="btn" data-k="${esc(k)}">Practice again</button></div>`}).join(''):'<div class="card sub">Nothing yet. Pick a subject or take the daily challenge to begin.</div>';
+ $$('#cont [data-k]').forEach(b=>b.onclick=()=>setup(ALL.find(a=>a.key===b.dataset.k)));
+ const t=dailyTopic(),ok=R().some(r=>day(r.t)===new Date().toDateString()&&r.daily&&r.wpm>=40&&r.acc>=95);
+ $('#daily').innerHTML=`<b>${esc(t.sub)}: ${esc(t.t)}</b><p class="sub">Target: 40 WPM with 95% accuracy. ${ok?'Completed today.':'Not completed yet.'} Streak: ${streak()} day${streak()===1?'':'s'}.</p>`}
+$('#goDaily').onclick=()=>{const t=dailyTopic();setup(t,{daily:1})};
+// ---- library ----
+for(let i=1;i<=8;i++)$('#fs').insertAdjacentHTML('beforeend',`<option>${i}</option>`);
+function renderLib(){const b=$('#fb').value,s=$('#fs').value,q=$('#q').value.toLowerCase().trim();
+ const subs=D.filter(([br,sm,sub,ts])=>(!b||br===b)&&(!s||sm==s)&&(!q||(sub+ts.map(t=>t[0]).join(' ')+br).toLowerCase().includes(q)));
+ $('#subs').innerHTML=subs.length?subs.map(([br,sm,sub,ts])=>`<div class="card"><b>${esc(sub)}</b><div class="sub">${br}, year ${Math.ceil(sm/2)}, semester ${sm}</div><div style="margin-top:8px">${ts.map(t=>`<button class="chip" data-k="${esc(sub+'|'+t[0])}">${esc(t[0])}</button>`).join('')}</div></div>`).join(''):'<div class="card sub">No subject matches. Clear a filter or try another word.</div>';
+ $$('#subs [data-k]').forEach(c=>c.onclick=()=>setup(ALL.find(a=>a.key===c.dataset.k)))}
+['#fb','#fs'].forEach(i=>$(i).onchange=renderLib);$('#q').oninput=renderLib;
+// ---- typing engine ----
+let cur=null,T=null,lastCfg=null;
+function setup(topic,opt={}){cur={topic,opt};stop();go('type');
+ $('#setup').style.display='block';$('#test').style.display='none';$('#result').style.display='none';
+ $('#sTitle').textContent=topic.t;$('#sSub').textContent=topic.sub+(topic.b?', '+topic.b:'')+(topic.s?' semester '+topic.s:'')}
+function build(topic,dif,n){let sents=[...topic.x],out=[],c=0,i=0;
+ if(dif==='hard'&&topic.k)sents.push('Key terms: '+topic.k+'.');
+ while(c<n){let s=sents[i++%sents.length];if(dif==='easy')s=s.toLowerCase().replace(/[.,:']/g,'');out.push(s);c+=s.split(' ').length;if(i>400)break}
+ const w=out.join(' ').split(' ').slice(0,n);let t=w.join(' ');if(dif!=='easy'&&!/[.]$/.test(t))t=t.replace(/[,:;]$/,'')+'.';return t}
+function begin(text,secs,label,meta,key,extra={}){lastCfg={text,secs,label,meta,key,extra};
+ $('#setup').style.display='none';$('#result').style.display='none';$('#test').style.display='block';
+ $('#tSub').textContent=label;$('#tMeta').textContent=meta;
+ const box=$('#box');box.innerHTML=[...text].map(c=>`<span class="u">${esc(c)}</span>`).join('');
+ T={text,secs,key,extra,label,start:0,err:0,keys:0,spans:[...box.children],iv:null,fin:false};
+ $('#ta').value='';$('#clock').textContent=fmt(secs);['lw','le','lc'].forEach(i=>$('#'+i).textContent='0');$('#la').textContent='100%';
+ T.spans[0].className='cur';box.scrollTop=0;$('#ta').focus()}
+const fmt=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(Math.max(0,Math.ceil(s)%60)).padStart(2,'0');
+function calc(){const v=$('#ta').value,t=T.text;let ok=0;for(let i=0;i<v.length;i++)if(v[i]===t[i])ok++;
+ const el=T.start?Math.min(T.secs,(Date.now()-T.start)/1000):0;return{v,ok,el,wpm:el>0?Math.round(ok/5/(el/60)):0,acc:v.length?Math.round(ok/v.length*100):100}}
+function tick(){if(!T||T.fin)return;const c=calc();$('#lw').textContent=c.wpm;$('#la').textContent=c.acc+'%';$('#le').textContent=T.err;$('#lc').textContent=c.ok;
+ $('#clock').textContent=fmt(T.secs-c.el);if(c.el>=T.secs)finish()}
+$('#ta').addEventListener('input',e=>{if(!T||T.fin)return;const ta=e.target;if(ta.value.length>T.text.length)ta.value=ta.value.slice(0,T.text.length);
+ if(!T.start){T.start=Date.now();T.iv=setInterval(tick,250)}
+ const v=ta.value;if(e.inputType==='insertText'&&e.data&&v.length&&v[v.length-1]!==T.text[v.length-1])T.err++;
+ T.spans.forEach((s,i)=>{s.className=i<v.length?(v[i]===T.text[i]?'c':'w'):'u'});
+ const cs=T.spans[Math.min(v.length,T.spans.length-1)];if(v.length<T.spans.length)cs.className='cur';
+ const box=$('#box');box.scrollTop=Math.max(0,cs.offsetTop-box.clientHeight/2+30);tick();if(v.length>=T.text.length)finish()});
+$('#box').onclick=()=>$('#ta').focus();
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&T&&!T.fin){stop();go('home')}});
+function stop(){if(T){clearInterval(T.iv);T.fin=true}}
+function finish(){if(!T||T.fin)return;const c=calc();T.fin=true;clearInterval(T.iv);
+ const words=T.text.split(' '),typed=c.v.split(' ');const bad=[];
+ words.forEach((w,i)=>{if(i<typed.length-1||(i===typed.length-1&&c.v.length>=T.text.length-0&&false)){if(typed[i]!==w)bad.push(w)}else if(i===typed.length-1&&typed[i]&&typed[i]!==w&&typed[i].length>=w.length)bad.push(w)});
+ const bw=[...new Set(bad.map(w=>w.replace(/[^\w'-]/g,'')).filter(w=>w.length>2))];
+ const nw=Math.round(c.ok/5),res={t:Date.now(),wpm:c.wpm,acc:c.acc,err:T.err,chars:c.ok,dur:Math.max(1,Math.round(c.el)),words:nw,key:T.key,daily:T.extra.daily?1:0};
+ if(c.v.length){S.results.push(res);save()}
+ const ok=T.extra.daily&&c.wpm>=40&&c.acc>=95;
+ $('#test').style.display='none';$('#result').style.display='block';
+ $('#rStats').innerHTML=stat(c.wpm,'WPM')+stat(c.acc+'%','Accuracy')+stat(c.ok,'Correct characters')+stat(T.err,'Errors')+stat(res.dur>=60?Math.floor(res.dur/60)+' min '+res.dur%60+' s':res.dur+' s','Time');
+ $('#rWords').innerHTML=(T.extra.daily?`<p><b>${ok?'Daily challenge completed.':'Daily challenge target: 40 WPM and 95% accuracy. Try again.'}</b></p>`:'')+(bw.length?'Words to practice: '+bw.map(w=>`<span class="bad">${esc(w)}</span>`).join(', '):'No missed words. Clean run.');
+ T.bw=bw;$('#mist').style.display=bw.length?'':'none';$('#next').style.display=cur&&cur.topic.key?'':'none'}
+$('#startBtn').onclick=()=>{const t=cur.topic,d=$('#dif').value,n=+$('#len').value,s=+$('#tim').value;
+ begin(t.passage||build(t,d,n),s,t.sub+': '+t.t,'Difficulty '+d+', '+n+' words',t.key,cur.opt)};
+$('#again').onclick=()=>{const c=lastCfg;begin(c.text,c.secs,c.label,c.meta,c.key,c.extra)};
+$('#mist').onclick=()=>{const w=T.bw;if(!w.length)return;let out=[];for(let r=0;r<3;r++)out.push(...w.slice().sort(()=>Math.random()-.5));
+ begin(out.join(' '),60,'Practice my mistakes','Your missed words, repeated','#mistakes')};
+$('#next').onclick=()=>{const i=ALL.findIndex(a=>a.key===cur.topic.key);setup(ALL[(i+1)%ALL.length])};
+// ---- PDF ----
+const drop=$('#drop');
+['dragover','dragenter'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.add('over')}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,x=>{x.preventDefault();drop.classList.remove('over')}));
+drop.addEventListener('drop',e=>{if(e.dataTransfer.files.length)readFiles(e.dataTransfer.files)});
+$('#file').onchange=e=>{if(e.target.files.length)readFiles(e.target.files);e.target.value=''};
+let SMP;
+async function getSample(){if(SMP!==undefined)return SMP;try{SMP=window.claude?await claude.use('sample'):null}catch(e){SMP=null}return SMP}
+const norm=t=>t.replace(/[\u2018\u2019]/g,"'").replace(/[\u201C\u201D]/g,'"').replace(/[\u2013\u2014]/g,'-').replace(/\u2026/g,'...').replace(/\[(unclear|illegible)[^\]]*\]/gi,' ').replace(/[^\x20-\x7E\n]/g,'').replace(/\s+/g,' ').trim();
+async function imgBlob(src,w,h){let bm=src;if(src instanceof Blob)bm=await createImageBitmap(src);
+ const W=w||bm.width,H=h||bm.height,k=Math.min(1,1800/Math.max(W,H)),c=document.createElement('canvas');c.width=Math.round(W*k);c.height=Math.round(H*k);
+ const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(bm,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',.85))}
+const OCR='Transcribe all the text in these images exactly as written, in reading order, including handwriting. Output only the plain text with no commentary, headings you invented, or markdown. Write maths as plain text. Skip diagrams. Mark words you cannot read as [unclear].';
+async function ocr(blobs,m){const s=await getSample();if(!s)throw{code:'none'};
+ let lim=null;try{lim=(await s.limits()).images}catch(e){}if(!lim)throw{code:'images_unavailable'};
+ const max=Math.max(1,Math.min(lim.maxCount||4,6)),out=[];
+ for(let i=0;i<blobs.length;i+=max){m.textContent='Reading handwriting and scans ('+Math.min(i+max,blobs.length)+' of '+blobs.length+'). This can take up to a minute.';
+  out.push((await s(OCR,{images:blobs.slice(i,i+max),cache:false})).text)}
+ return out.join(' ')}
+function ocrErr(e){const c=e&&e.code;return c==='not_granted'?'To read handwriting and scans, allow Claude when asked, then upload again.':c==='rate_limited'?'Too many reads right now. Wait a minute and upload again.':c==='image_rejected'?'One image could not be read. Try a JPG or PNG under 20 MB.':(c==='none'||c==='images_unavailable'||c==='sampling_disabled'||c==='capability_disabled')?'Reading handwriting and scans needs Claude, which is not available in this view. Open the page from your claude.ai account and try again.':'Reading the scan failed. Try again, or use a clearer photo.'}
+async function readFiles(fl){fl=[...fl];const m=$('#pmsg');$('#pinfo').innerHTML='';
+ const pdf=fl.find(f=>f.type==='application/pdf'||/\.pdf$/i.test(f.name)),imgs=fl.filter(f=>f.type.startsWith('image/')).slice(0,12);
+ if(!pdf&&!imgs.length){m.textContent='Choose a PDF or an image (JPG, PNG or WebP).';return}
+ if(fl.some(f=>f.size>25*1024*1024)){m.textContent='A file is over 25 MB. Choose a smaller one.';return}
+ let txt='',pages=0,name='',note='';
+ try{
+ if(pdf){name=pdf.name;
+  if(!window.pdfjsLib){m.textContent='The PDF reader could not load. Check your connection and reload.';return}
+  m.textContent='Extracting content...';
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const doc=await pdfjsLib.getDocument({data:await pdf.arrayBuffer()}).promise;pages=doc.numPages;const parts=[],weak=[];
+  for(let i=1;i<=doc.numPages;i++){const pg=await doc.getPage(i),c=await pg.getTextContent(),t=c.items.map(x=>x.str).join(' ');parts.push(t);if(t.split(/\s+/).filter(Boolean).length<15)weak.push(pg)}
+  txt=parts.join(' ').replace(/\bPage \d+( of \d+)?\b/gi,'');
+  if(weak.length){const use=weak.slice(0,12);m.textContent='Preparing '+use.length+' scanned page'+(use.length>1?'s':'')+'...';
+   const bl=[];for(const pg of use){const v1=pg.getViewport({scale:1}),sc=1500/Math.max(v1.width,v1.height),v=pg.getViewport({scale:sc}),c=document.createElement('canvas');c.width=v.width;c.height=v.height;
+    await pg.render({canvasContext:c.getContext('2d'),viewport:v}).promise;bl.push(await imgBlob(c,c.width,c.height))}
+   try{txt+=' '+await ocr(bl,m);note=use.length+' page'+(use.length>1?'s':'')+' read from scan or handwriting'+(weak.length>12?' (first 12 only)':'')+'.'}
+   catch(e){if(norm(txt).split(' ').length<30){m.textContent=ocrErr(e);return}note='Scanned pages were skipped: '+ocrErr(e)}}
+ }else{name=imgs.length>1?imgs[0].name+' and '+(imgs.length-1)+' more':imgs[0].name;pages=imgs.length;m.textContent='Preparing image'+(imgs.length>1?'s':'')+'...';
+  const bl=[];for(const f of imgs)bl.push(await imgBlob(f));
+  try{txt=await ocr(bl,m);note='Read from photo or handwriting.'}catch(e){m.textContent=ocrErr(e);return}}
+ }catch(e){m.textContent=pdf?'This file could not be read. It may be protected or damaged.':'This image could not be opened. Use a JPG, PNG or WebP file.';return}
+ txt=norm(txt);const words=txt.split(' ').filter(Boolean);
+ if(words.length<20){m.textContent='Not enough readable text found. Try a clearer or closer photo.';return}
+ const sents=txt.match(/[^.!?]+[.!?]+/g)||[txt];let ps=[],p=[],c=0;
+ sents.forEach(s=>{s=s.trim();if(s.length<25)return;p.push(s);c+=s.split(' ').length;if(c>=50){ps.push(p.join(' '));p=[];c=0}});if(p.length&&c>=15)ps.push(p.join(' '));
+ if(!ps.length)ps=[words.slice(0,80).join(' ')];
+ const freq={};words.forEach(w=>{w=w.toLowerCase().replace(/[^a-z]/g,'');if(w.length>6)freq[w]=(freq[w]||0)+1});
+ const topics=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>x[0]);
+ PDF={name,pages,words:words.length,ps,topics,note,i:0};try{localStorage.setItem('etmpdf',JSON.stringify(PDF))}catch(e){}
+ m.textContent='Ready.';showPDF()}
+function showPDF(){if(!PDF)return;$('#pinfo').innerHTML=`<div class="card"><b>${esc(PDF.name)}</b><p class="sub">${PDF.pages} pages, ${PDF.words} words, ${PDF.ps.length} passages. Frequent terms: ${PDF.topics.map(esc).join(', ')||'none found'}. ${esc(PDF.note||'')}</p>
+ <div class="row"><button class="btn p" id="pgo">Start typing</button><button class="btn" id="pclr">Remove PDF</button></div></div>`;
+ $('#pgo').onclick=()=>{const i=PDF.i%PDF.ps.length;PDF.i++;setup({sub:'My PDF',t:PDF.name+' (passage '+(i+1)+' of '+PDF.ps.length+')',passage:PDF.ps[i],key:'#pdf'});$('#dif').disabled=$('#len').disabled=true};
+ $('#pclr').onclick=()=>{PDF=null;try{localStorage.removeItem('etmpdf')}catch(e){}$('#pinfo').innerHTML='';$('#pmsg').textContent='PDF removed.'}}
+showPDF();
+const _setup=setup;setup=function(t,o){_setup(t,o);$('#dif').disabled=$('#len').disabled=!!t.passage};
+// ---- progress ----
+const ACH=[['First test',r=>r.length>=1],['50 WPM',r=>r.some(x=>x.wpm>=50)],['100 WPM',r=>r.some(x=>x.wpm>=100)],['95% accuracy',r=>r.some(x=>x.acc>=95&&x.chars>30)],['7 day streak',()=>streak()>=7],['10 topics completed',()=>done()>=10],['1,000 words typed',r=>r.reduce((a,x)=>a+x.words,0)>=1000]];
+function renderProg(){const r=R();
+ $('#pstats').innerHTML=stat(r.length,'Total tests')+statsHTML();
+ if(r.length<2)$('#chart').innerHTML='<span class="sub">Complete at least two tests to see your speed trend.</span>';
+ else{const d=r.slice(-20),mx=Math.max(20,...d.map(x=>x.wpm)),W=640,H=180,px=i=>30+i*(W-50)/(d.length-1),py=v=>H-20-v/mx*(H-40);
+  $('#chart').innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto" role="img" aria-label="WPM line chart"><line x1="30" y1="${H-20}" x2="${W-10}" y2="${H-20}" stroke="var(--line)"/><text x="2" y="${py(mx)+4}">${mx}</text><text x="8" y="${H-16}">0</text>
+  <polyline fill="none" stroke="var(--blue)" stroke-width="2.5" points="${d.map((x,i)=>px(i)+','+py(x.wpm)).join(' ')}"/>${d.map((x,i)=>`<circle cx="${px(i)}" cy="${py(x.wpm)}" r="3.5" fill="var(--pur)"><title>${x.wpm} WPM</title></circle>`).join('')}</svg>`}
+ const aw=avg(r.map(x=>x.wpm)),aa=avg(r.map(x=>x.acc)),sc=Math.round(Math.min(aw/60,1)*40+aa/100*30+Math.min(done()/10,1)*20+Math.min(streak()/7,1)*10);
+ $('#score').innerHTML=`<b style="font-size:30px">${sc} / 100</b><div class="bar" style="margin:10px 0"><i style="width:${sc}%"></i></div><span class="sub">Speed 40%, accuracy 30%, topic completion 20%, consistency 10%.</span>`;
+ $('#achs').innerHTML=ACH.map(([n,f])=>`<div class="card ach ${f(r)?'got':''}"><b>${n}</b><div class="sub">${f(r)?'Unlocked':'Locked'}</div></div>`).join('')}
+$('#reset').onclick=()=>{if(confirm('Delete all your results and the saved PDF?')){S={results:[]};PDF=null;try{localStorage.removeItem('etm');localStorage.removeItem('etmpdf')}catch(e){}$('#pinfo').innerHTML='';renderProg()}};
+renderHome();
+</script>
+</body>
+</html>
