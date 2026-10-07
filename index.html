@@ -132,7 +132,11 @@ input[type=email],input[type=password]{background:var(--card);border:1px solid v
 <section class="view" id="v-pdf">
   <h2 style="margin-top:0">Turn your notes into typing practice</h2>
   <p class="sub">Upload a PDF, or photos of handwritten or printed pages. Typed PDFs are read in your browser. Scanned pages, photos and handwriting are sent to an AI reading service (Claude inside claude.ai, Google Gemini on the live site) to be read.</p>
-  <label class="drop" id="drop" style="display:block"><b>Drop a PDF or photos here</b><br>Typed PDFs, scanned PDFs, handwritten notes and photos all work<br>or click to choose files<input type="file" id="file" accept="application/pdf,image/*" multiple hidden></label>
+  <details class="card" id="kbox" style="margin-bottom:14px"><summary style="cursor:pointer">Reading handwriting or scans? Add your free Gemini key</summary>
+<p class="sub">Get a free key at aistudio.google.com (Get API key). Paste it below. It is saved only in this browser and is sent only to Google to read your pages. Typed PDFs do not need it.</p>
+<div class="row"><input type="password" id="gk" placeholder="Paste your key" aria-label="Gemini key" style="flex:1;min-width:200px"><button class="btn p" id="gsave">Save key</button><button class="btn" id="gclr">Remove key</button></div>
+<p class="sub" id="gst"></p></details>
+<label class="drop" id="drop" style="display:block"><b>Drop a PDF or photos here</b><br>Typed PDFs, scanned PDFs, handwritten notes and photos all work<br>or click to choose files<input type="file" id="file" accept="application/pdf,image/*" multiple hidden></label>
   <p id="pmsg" class="sub"></p>
   <div id="pinfo"></div>
 </section>
@@ -328,12 +332,15 @@ async function imgBlob(src,w,h){let bm=src;if(src instanceof Blob)bm=await creat
  const W=w||bm.width,H=h||bm.height,k=Math.min(1,1800/Math.max(W,H)),c=document.createElement('canvas');c.width=Math.round(W*k);c.height=Math.round(H*k);
  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(bm,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',.85))}
 const OCR='Transcribe all the text in these images exactly as written, in reading order, including handwriting. Output only the plain text with no commentary, headings you invented, or markdown. Write maths as plain text. Skip diagrams. Mark words you cannot read as [unclear].';
-const OCR_API="PASTE_WORKER_URL"; // address of your handwriting-reader Worker (holds the Gemini key privately)
+const OCR_API="/api/ocr"; // address of your handwriting-reader Worker (holds the Gemini key privately)
+const BUILT_KEY="PASTE_GEMINI_KEY"; // filled in automatically by GitHub at deploy time
+const UKEY=()=>{let k='';try{k=localStorage.getItem('etm_gkey')||''}catch(e){}return k||(BUILT_KEY.startsWith('PASTE_')?'':BUILT_KEY)};
+const useWorker=()=>OCR_API&&OCR_API!=='PASTE_WORKER_URL';
 const b64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(b)});
-async function geminiOcr(blobs,m){const out=[];
- for(let i=0;i<blobs.length;i+=4){m.textContent='Reading handwriting and scans ('+Math.min(i+4,blobs.length)+' of '+blobs.length+'). This can take up to a minute.';
-  const parts=[{text:OCR}];for(const b of blobs.slice(i,i+4))parts.push({inline_data:{mime_type:'image/jpeg',data:await b64(b)}});
-  let r;try{r=await fetch(OCR_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}]})})}catch(e){throw{code:'net'}}
+async function geminiOcr(blobs,m,server){const out=[];
+ for(let i=0;i<blobs.length;i+=2){m.textContent='Reading handwriting and scans ('+Math.min(i+2,blobs.length)+' of '+blobs.length+'). This can take up to a minute.';
+  const parts=[{text:OCR}];for(const b of blobs.slice(i,i+2))parts.push({inline_data:{mime_type:'image/jpeg',data:await b64(b)}});
+  let r;try{r=await fetch(server?OCR_API:'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',{method:'POST',headers:server?{'Content-Type':'application/json'}:{'Content-Type':'application/json','x-goog-api-key':UKEY()},body:JSON.stringify({contents:[{parts}]})})}catch(e){throw{code:'net'}}
   if(!r.ok)throw{code:'gem'+r.status};
   const j=await r.json();out.push(((j.candidates||[])[0]?.content?.parts||[]).map(p=>p.text||'').join(' '))}
  return out.join(' ')}
@@ -343,9 +350,10 @@ async function ocr(blobs,m){const s=await getSample();let lim=null;
   for(let i=0;i<blobs.length;i+=max){m.textContent='Reading handwriting and scans ('+Math.min(i+max,blobs.length)+' of '+blobs.length+'). This can take up to a minute.';
    out.push((await s(OCR,{images:blobs.slice(i,i+max),cache:false})).text)}
   return out.join(' ')}
- if(OCR_API&&OCR_API!=='PASTE_WORKER_URL')return geminiOcr(blobs,m);
+ if(useWorker()){try{return await geminiOcr(blobs,m,true)}catch(e){if(!['gem404','gem405','gem500','net'].includes(e.code))throw e;if(!UKEY())throw{code:'none'}}}
+ if(UKEY())return geminiOcr(blobs,m,false);
  throw{code:'none'}}
-function ocrErr(e){const c=e&&e.code;return c==='not_granted'?'To read handwriting and scans, allow Claude when asked, then upload again.':c==='rate_limited'||c==='gem429'?'The free reading limit is used up for now. Try again in a few minutes.':c==='image_rejected'?'One image could not be read. Try a JPG or PNG under 20 MB.':c==='net'?'No internet connection, or the reading service could not be reached.':(c==='gem400'||c==='gem403'||c==='gem404')?'The handwriting reader is not set up correctly on this site. Check the reader setup.':(c==='none'||c==='images_unavailable'||c==='sampling_disabled'||c==='capability_disabled')?'Handwriting reading is not set up on this site yet. Typed PDFs still work.':'Reading the scan failed. Try again, or use a clearer photo.'}
+function ocrErr(e){const c=e&&e.code;return c==='not_granted'?'To read handwriting and scans, allow Claude when asked, then upload again.':c==='rate_limited'||c==='gem429'?'The free reading limit is used up for now. Try again in a few minutes.':c==='image_rejected'?'One image could not be read. Try a JPG or PNG under 20 MB.':c==='net'?'No internet connection, or the reading service could not be reached.':(c==='gem400'||c==='gem403'||c==='gem404')?'Your Gemini key was not accepted. Check that you pasted it fully, or create a new key.':(c==='none'||c==='images_unavailable'||c==='sampling_disabled'||c==='capability_disabled')?'To read handwriting, open the box above (Reading handwriting? Add your free Gemini key) and paste your free key. Typed PDFs work without it.':'Reading the scan failed. Try again, or use a clearer photo.'}
 async function readFiles(fl){fl=[...fl];const m=$('#pmsg');$('#pinfo').innerHTML='';
  const pdf=fl.find(f=>f.type==='application/pdf'||/\.pdf$/i.test(f.name)),imgs=fl.filter(f=>f.type.startsWith('image/')).slice(0,12);
  if(!pdf&&!imgs.length){m.textContent='Choose a PDF or an image (JPG, PNG or WebP).';return}
@@ -395,6 +403,9 @@ function renderProg(){const r=R();
  $('#score').innerHTML=`<b style="font-size:30px">${sc} / 100</b><div class="bar" style="margin:10px 0"><i style="width:${sc}%"></i></div><span class="sub">Speed 40%, accuracy 30%, topic completion 20%, consistency 10%.</span>`;
  $('#achs').innerHTML=ACH.map(([n,f])=>`<div class="card ach ${f(r)?'got':''}"><b>${n}</b><div class="sub">${f(r)?'Unlocked':'Locked'}</div></div>`).join('')}
 $('#reset').onclick=()=>{if(confirm('Delete all your results and the saved PDF?')){S={results:[]};PDF=null;try{localStorage.removeItem('etm'+UK);localStorage.removeItem('etmpdf'+UK)}catch(e){}$('#pinfo').innerHTML='';renderProg()}};
+const gst=()=>{$('#gst').textContent=UKEY()?'A key is saved in this browser.':'No key saved.'};gst();
+$('#gsave').onclick=()=>{const k=$('#gk').value.trim();if(k.length<20){$('#gst').textContent='That does not look like a full key. Paste it again.';return}try{localStorage.setItem('etm_gkey',k)}catch(e){}$('#gk').value='';gst()};
+$('#gclr').onclick=()=>{try{localStorage.removeItem('etm_gkey')}catch(e){}gst()};
 // ---- login (Firebase Authentication). Paste your own config below. ----
 const FIREBASE_CONFIG={apiKey:"PASTE_API_KEY",authDomain:"PASTE_AUTH_DOMAIN",projectId:"PASTE_PROJECT_ID",appId:"PASTE_APP_ID"};
 function loadUser(){S={results:[]};PDF=null;try{S=JSON.parse(localStorage.getItem('etm'+UK)||'{"results":[]}')}catch(e){}try{PDF=JSON.parse(localStorage.getItem('etmpdf'+UK)||'null')}catch(e){}}
