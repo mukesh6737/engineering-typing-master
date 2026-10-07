@@ -43,10 +43,21 @@ select,input[type=search]{background:var(--card);border:1px solid var(--line);bo
 .drop{border:2px dashed var(--line);border-radius:16px;padding:36px;text-align:center;cursor:pointer}
 .drop.over{border-color:var(--pur);background:color-mix(in srgb,var(--pur) 8%,transparent)}
 svg text{fill:var(--mute);font-size:11px}
+#auth{display:none;position:fixed;inset:0;z-index:50;background:var(--bg);align-items:center;justify-content:center;padding:20px;overflow:auto}
+input[type=email],input[type=password]{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
 @media (max-width:600px){#box{font-size:18px}}
 </style>
 </head>
 <body>
+<div id="auth" role="dialog" aria-label="Log in"><div class="card" style="width:min(400px,92vw)">
+<h2 style="margin-top:0">Log in to Engineering Typing Master</h2>
+<p class="sub">Free to use. Create an account or log in to save your progress.</p>
+<label>Email<br><input type="email" id="aem" autocomplete="email" style="width:100%"></label>
+<p style="margin:10px 0 0"><label>Password<br><input type="password" id="apw" autocomplete="current-password" style="width:100%"></label></p>
+<p id="amsg" style="color:var(--bad);min-height:1.4em;margin:8px 0" role="alert"></p>
+<div class="row"><button class="btn p" id="alog">Log in</button><button class="btn" id="asign">Create account</button></div>
+<p><button class="btn" id="agoo" style="width:100%">Continue with Google</button></p>
+<button class="chip" id="afor">Forgot password?</button></div></div>
 <header>
   <div class="logo">Engineering Typing Master</div>
   <nav id="nav">
@@ -55,7 +66,7 @@ svg text{fill:var(--mute);font-size:11px}
     <button data-v="pdf">My PDF</button>
     <button data-v="prog">Progress</button>
   </nav>
-  <button class="btn" id="theme" aria-label="Toggle light or dark mode">Theme</button>
+  <span class="sub" id="who" style="display:none"></span><button class="btn" id="logout" style="display:none">Log out</button><button class="btn" id="theme" aria-label="Toggle light or dark mode">Theme</button>
 </header>
 <main>
 
@@ -120,7 +131,7 @@ svg text{fill:var(--mute);font-size:11px}
 
 <section class="view" id="v-pdf">
   <h2 style="margin-top:0">Turn your notes into typing practice</h2>
-  <p class="sub">Upload a PDF, or photos of handwritten or printed pages. Typed PDFs are read in your browser. Scanned pages, photos and handwriting are sent to Claude to be read, using your Claude account, after you approve.</p>
+  <p class="sub">Upload a PDF, or photos of handwritten or printed pages. Typed PDFs are read in your browser. Scanned pages, photos and handwriting are sent to an AI reading service (Claude inside claude.ai, Google Gemini on the live site) to be read.</p>
   <label class="drop" id="drop" style="display:block"><b>Drop a PDF or photos here</b><br>Typed PDFs, scanned PDFs, handwritten notes and photos all work<br>or click to choose files<input type="file" id="file" accept="application/pdf,image/*" multiple hidden></label>
   <p id="pmsg" class="sub"></p>
   <div id="pinfo"></div>
@@ -139,6 +150,8 @@ svg text{fill:var(--mute);font-size:11px}
 </section>
 
 </main>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -217,10 +230,10 @@ const D=[
 ];
 const ALL=[];D.forEach(([b,s,sub,ts])=>ts.forEach(([t,x,k])=>ALL.push({b,s,sub,t,x,k,key:sub+'|'+t})));
 // ---- storage ----
-let S={results:[]},mem=null;
-try{S=JSON.parse(localStorage.getItem('etm')||'{"results":[]}')}catch(e){}
-try{mem=JSON.parse(localStorage.getItem('etmpdf')||'null')}catch(e){}
-const save=()=>{try{localStorage.setItem('etm',JSON.stringify(S))}catch(e){}};
+let UK='',S={results:[]},mem=null;
+try{S=JSON.parse(localStorage.getItem('etm'+UK)||'{"results":[]}')}catch(e){}
+try{mem=JSON.parse(localStorage.getItem('etmpdf'+UK)||'null')}catch(e){}
+const save=()=>{try{localStorage.setItem('etm'+UK,JSON.stringify(S))}catch(e){}};
 let PDF=mem;
 // ---- navigation ----
 function go(v){$$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
@@ -315,13 +328,24 @@ async function imgBlob(src,w,h){let bm=src;if(src instanceof Blob)bm=await creat
  const W=w||bm.width,H=h||bm.height,k=Math.min(1,1800/Math.max(W,H)),c=document.createElement('canvas');c.width=Math.round(W*k);c.height=Math.round(H*k);
  const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(bm,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',.85))}
 const OCR='Transcribe all the text in these images exactly as written, in reading order, including handwriting. Output only the plain text with no commentary, headings you invented, or markdown. Write maths as plain text. Skip diagrams. Mark words you cannot read as [unclear].';
-async function ocr(blobs,m){const s=await getSample();if(!s)throw{code:'none'};
- let lim=null;try{lim=(await s.limits()).images}catch(e){}if(!lim)throw{code:'images_unavailable'};
- const max=Math.max(1,Math.min(lim.maxCount||4,6)),out=[];
- for(let i=0;i<blobs.length;i+=max){m.textContent='Reading handwriting and scans ('+Math.min(i+max,blobs.length)+' of '+blobs.length+'). This can take up to a minute.';
-  out.push((await s(OCR,{images:blobs.slice(i,i+max),cache:false})).text)}
+const OCR_API="PASTE_WORKER_URL"; // address of your handwriting-reader Worker (holds the Gemini key privately)
+const b64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=rej;r.readAsDataURL(b)});
+async function geminiOcr(blobs,m){const out=[];
+ for(let i=0;i<blobs.length;i+=4){m.textContent='Reading handwriting and scans ('+Math.min(i+4,blobs.length)+' of '+blobs.length+'). This can take up to a minute.';
+  const parts=[{text:OCR}];for(const b of blobs.slice(i,i+4))parts.push({inline_data:{mime_type:'image/jpeg',data:await b64(b)}});
+  let r;try{r=await fetch(OCR_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}]})})}catch(e){throw{code:'net'}}
+  if(!r.ok)throw{code:'gem'+r.status};
+  const j=await r.json();out.push(((j.candidates||[])[0]?.content?.parts||[]).map(p=>p.text||'').join(' '))}
  return out.join(' ')}
-function ocrErr(e){const c=e&&e.code;return c==='not_granted'?'To read handwriting and scans, allow Claude when asked, then upload again.':c==='rate_limited'?'Too many reads right now. Wait a minute and upload again.':c==='image_rejected'?'One image could not be read. Try a JPG or PNG under 20 MB.':(c==='none'||c==='images_unavailable'||c==='sampling_disabled'||c==='capability_disabled')?'Reading handwriting and scans needs Claude, which is not available in this view. Open the page from your claude.ai account and try again.':'Reading the scan failed. Try again, or use a clearer photo.'}
+async function ocr(blobs,m){const s=await getSample();let lim=null;
+ if(s){try{lim=(await s.limits()).images}catch(e){}}
+ if(s&&lim){const max=Math.max(1,Math.min(lim.maxCount||4,6)),out=[];
+  for(let i=0;i<blobs.length;i+=max){m.textContent='Reading handwriting and scans ('+Math.min(i+max,blobs.length)+' of '+blobs.length+'). This can take up to a minute.';
+   out.push((await s(OCR,{images:blobs.slice(i,i+max),cache:false})).text)}
+  return out.join(' ')}
+ if(OCR_API&&OCR_API!=='PASTE_WORKER_URL')return geminiOcr(blobs,m);
+ throw{code:'none'}}
+function ocrErr(e){const c=e&&e.code;return c==='not_granted'?'To read handwriting and scans, allow Claude when asked, then upload again.':c==='rate_limited'||c==='gem429'?'The free reading limit is used up for now. Try again in a few minutes.':c==='image_rejected'?'One image could not be read. Try a JPG or PNG under 20 MB.':c==='net'?'No internet connection, or the reading service could not be reached.':(c==='gem400'||c==='gem403'||c==='gem404')?'The handwriting reader is not set up correctly on this site. Check the reader setup.':(c==='none'||c==='images_unavailable'||c==='sampling_disabled'||c==='capability_disabled')?'Handwriting reading is not set up on this site yet. Typed PDFs still work.':'Reading the scan failed. Try again, or use a clearer photo.'}
 async function readFiles(fl){fl=[...fl];const m=$('#pmsg');$('#pinfo').innerHTML='';
  const pdf=fl.find(f=>f.type==='application/pdf'||/\.pdf$/i.test(f.name)),imgs=fl.filter(f=>f.type.startsWith('image/')).slice(0,12);
  if(!pdf&&!imgs.length){m.textContent='Choose a PDF or an image (JPG, PNG or WebP).';return}
@@ -351,12 +375,12 @@ async function readFiles(fl){fl=[...fl];const m=$('#pmsg');$('#pinfo').innerHTML
  if(!ps.length)ps=[words.slice(0,80).join(' ')];
  const freq={};words.forEach(w=>{w=w.toLowerCase().replace(/[^a-z]/g,'');if(w.length>6)freq[w]=(freq[w]||0)+1});
  const topics=Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,6).map(x=>x[0]);
- PDF={name,pages,words:words.length,ps,topics,note,i:0};try{localStorage.setItem('etmpdf',JSON.stringify(PDF))}catch(e){}
+ PDF={name,pages,words:words.length,ps,topics,note,i:0};try{localStorage.setItem('etmpdf'+UK,JSON.stringify(PDF))}catch(e){}
  m.textContent='Ready.';showPDF()}
 function showPDF(){if(!PDF)return;$('#pinfo').innerHTML=`<div class="card"><b>${esc(PDF.name)}</b><p class="sub">${PDF.pages} pages, ${PDF.words} words, ${PDF.ps.length} passages. Frequent terms: ${PDF.topics.map(esc).join(', ')||'none found'}. ${esc(PDF.note||'')}</p>
  <div class="row"><button class="btn p" id="pgo">Start typing</button><button class="btn" id="pclr">Remove PDF</button></div></div>`;
  $('#pgo').onclick=()=>{const i=PDF.i%PDF.ps.length;PDF.i++;setup({sub:'My PDF',t:PDF.name+' (passage '+(i+1)+' of '+PDF.ps.length+')',passage:PDF.ps[i],key:'#pdf'});$('#dif').disabled=$('#len').disabled=true};
- $('#pclr').onclick=()=>{PDF=null;try{localStorage.removeItem('etmpdf')}catch(e){}$('#pinfo').innerHTML='';$('#pmsg').textContent='PDF removed.'}}
+ $('#pclr').onclick=()=>{PDF=null;try{localStorage.removeItem('etmpdf'+UK)}catch(e){}$('#pinfo').innerHTML='';$('#pmsg').textContent='PDF removed.'}}
 showPDF();
 const _setup=setup;setup=function(t,o){_setup(t,o);$('#dif').disabled=$('#len').disabled=!!t.passage};
 // ---- progress ----
@@ -370,7 +394,26 @@ function renderProg(){const r=R();
  const aw=avg(r.map(x=>x.wpm)),aa=avg(r.map(x=>x.acc)),sc=Math.round(Math.min(aw/60,1)*40+aa/100*30+Math.min(done()/10,1)*20+Math.min(streak()/7,1)*10);
  $('#score').innerHTML=`<b style="font-size:30px">${sc} / 100</b><div class="bar" style="margin:10px 0"><i style="width:${sc}%"></i></div><span class="sub">Speed 40%, accuracy 30%, topic completion 20%, consistency 10%.</span>`;
  $('#achs').innerHTML=ACH.map(([n,f])=>`<div class="card ach ${f(r)?'got':''}"><b>${n}</b><div class="sub">${f(r)?'Unlocked':'Locked'}</div></div>`).join('')}
-$('#reset').onclick=()=>{if(confirm('Delete all your results and the saved PDF?')){S={results:[]};PDF=null;try{localStorage.removeItem('etm');localStorage.removeItem('etmpdf')}catch(e){}$('#pinfo').innerHTML='';renderProg()}};
+$('#reset').onclick=()=>{if(confirm('Delete all your results and the saved PDF?')){S={results:[]};PDF=null;try{localStorage.removeItem('etm'+UK);localStorage.removeItem('etmpdf'+UK)}catch(e){}$('#pinfo').innerHTML='';renderProg()}};
+// ---- login (Firebase Authentication). Paste your own config below. ----
+const FIREBASE_CONFIG={apiKey:"PASTE_API_KEY",authDomain:"PASTE_AUTH_DOMAIN",projectId:"PASTE_PROJECT_ID",appId:"PASTE_APP_ID"};
+function loadUser(){S={results:[]};PDF=null;try{S=JSON.parse(localStorage.getItem('etm'+UK)||'{"results":[]}')}catch(e){}try{PDF=JSON.parse(localStorage.getItem('etmpdf'+UK)||'null')}catch(e){}}
+(function(){
+ if(!(window.firebase&&FIREBASE_CONFIG.apiKey&&FIREBASE_CONFIG.apiKey!=='PASTE_API_KEY'))return; // no config: app opens without login
+ firebase.initializeApp(FIREBASE_CONFIG);const au=firebase.auth(),box=$('#auth'),msg=$('#amsg');box.style.display='flex';
+ const E={'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account with this email. Choose Create account.','auth/email-already-in-use':'This email already has an account. Choose Log in.','auth/weak-password':'Use a password with at least 6 characters.','auth/invalid-email':'Enter a valid email address.','auth/popup-closed-by-user':'Google sign-in was closed. Try again.','auth/too-many-requests':'Too many tries. Wait a few minutes.','auth/network-request-failed':'No internet connection.','auth/unauthorized-domain':'This website address is not allowed yet in Firebase settings.'};
+ const fail=e=>{msg.style.color='var(--bad)';msg.textContent=E[e.code]||'Something went wrong. Try again.'};
+ const val=()=>({e:$('#aem').value.trim(),p:$('#apw').value});
+ $('#alog').onclick=()=>{const v=val();if(!v.e||!v.p){msg.textContent='Enter your email and password.';return}au.signInWithEmailAndPassword(v.e,v.p).catch(fail)};
+ $('#asign').onclick=()=>{const v=val();if(!v.e||!v.p){msg.textContent='Enter an email and a password to create your account.';return}au.createUserWithEmailAndPassword(v.e,v.p).catch(fail)};
+ $('#agoo').onclick=()=>au.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(fail);
+ $('#afor').onclick=()=>{const v=val();if(!v.e){msg.style.color='var(--bad)';msg.textContent='Type your email above first.';return}au.sendPasswordResetEmail(v.e).then(()=>{msg.style.color='var(--ok)';msg.textContent='Password reset email sent. Check your inbox.'}).catch(fail)};
+ $('#apw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#alog').click()});
+ $('#logout').onclick=()=>au.signOut();
+ au.onAuthStateChanged(u=>{stop();
+  if(u){UK='_'+u.uid;loadUser();box.style.display='none';$('#apw').value='';msg.textContent='';$('#who').textContent=u.email||u.displayName||'';$('#who').style.display='';$('#logout').style.display='';$('#pinfo').innerHTML='';showPDF();go('home')}
+  else{UK='';S={results:[]};PDF=null;$('#who').style.display=$('#logout').style.display='none';box.style.display='flex'}});
+})();
 renderHome();
 </script>
 </body>
