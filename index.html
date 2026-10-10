@@ -5,79 +5,125 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Engineering Typing Master</title>
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f6fb;--card:#fff;--ink:#0f1b3d;--mute:#5d6a8a;--line:#dbe1ef;--blue:#2f5bea;--pur:#7c4dff;--ok:#1a9a5b;--bad:#d93a4a}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a1230;--card:#111c44;--ink:#eaf0ff;--mute:#93a1c9;--line:#243063;--blue:#6c8cff;--pur:#a98bff;--ok:#43d68f;--bad:#ff6b7a}}
-:root[data-theme="dark"]{--bg:#0a1230;--card:#111c44;--ink:#eaf0ff;--mute:#93a1c9;--line:#243063;--blue:#6c8cff;--pur:#a98bff;--ok:#43d68f;--bad:#ff6b7a}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*,*:before,*:after{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light dark;
+--bg:light-dark(#eee8da,#0f1013);--card:light-dark(#fbf8f0,#17191f);--ink:light-dark(#15171c,#efeadf);--bd:light-dark(#15171c,#3d404c);--mute:light-dark(#625f54,#a29f93);--soft:light-dark(#e3dccb,#262831);
+--acc:light-dark(#ff5a1f,#ff7a45);--acc-t:color-mix(in srgb,var(--acc) 15%,transparent);--fire:light-dark(#ffb000,#ffc233);--ok:light-dark(#0f7a58,#3ddc97);--bad:light-dark(#cf2438,#ff6b7b);
+--grid:light-dark(rgba(21,23,28,.065),rgba(239,234,223,.045));--shc:light-dark(#15171c,#000);--sh:4px 4px 0 var(--shc);--disp:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;--mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+:root[data-theme="light"]{color-scheme:light}:root[data-theme="dark"]{color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*,*:before,*:after{box-sizing:border-box}
+body{margin:0;color:var(--ink);font:500 16px/1.6 "Bricolage Grotesque","Segoe UI",system-ui,sans-serif;background:linear-gradient(var(--grid) 1px,transparent 1px) 0 0/30px 30px,linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/30px 30px,var(--bg)}
 button,select,input{font:inherit;color:inherit}
-header{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
-.logo{font-weight:700;font-size:18px;margin-right:auto;letter-spacing:-.02em}
-nav{display:flex;flex-wrap:wrap;gap:4px}
-nav button,.btn{border:1px solid var(--line);background:transparent;border-radius:10px;padding:8px 14px;cursor:pointer}
-nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
-.btn.p{background:linear-gradient(135deg,var(--blue),var(--pur));border:0;color:#fff;font-weight:600}
-.btn:focus-visible,nav button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--pur);outline-offset:2px}
-main{max-width:1000px;margin:0 auto;padding:24px 20px 60px}
-h1{font-size:clamp(30px,6vw,52px);line-height:1.05;margin:8px 0 10px;letter-spacing:-.03em}
-h2{margin:28px 0 12px;font-size:22px}
-.sub{color:var(--mute);max-width:56ch}
-.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
-.stat b{display:block;font-size:28px;letter-spacing:-.02em}
-.stat span{color:var(--mute);font-size:14px}
-.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-.chip{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:4px 12px;margin:3px 4px 3px 0;cursor:pointer;background:transparent;font-size:14px}
-.chip:hover{border-color:var(--blue);color:var(--blue)}
-select,input[type=search]{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+h1,h2,.stat b,.sk b{font-family:var(--disp)}
+.lab{font:700 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}.lab:before{content:"// ";color:var(--acc)}
+.stat span,.pill,.hd,.wk span{font:600 11.5px var(--mono);letter-spacing:.06em;text-transform:uppercase}
+header{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 24px;border-bottom:2px solid var(--bd);background:var(--card);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.brand{display:flex;align-items:center;gap:.6ch;margin-right:auto;font:600 15px var(--mono);white-space:nowrap;cursor:pointer;border:0;background:none;color:var(--ink);padding:0}
+.brand .w{display:inline-flex;align-items:center}
+.brand b{display:inline-grid;place-items:center;width:30px;height:32px;border:2px solid var(--bd);border-bottom-width:5px;border-radius:7px;background:var(--acc);color:#15171c;font:800 15px var(--mono);margin-right:1px}
+.brand i{font-style:normal;display:inline-block;overflow:hidden;max-width:0;vertical-align:bottom;transition:max-width calc(var(--n)*.06s) steps(var(--n),end)}
+.brand.open i{max-width:calc(var(--n)*1ch)}.brand.open .w:nth-child(2) i{transition-delay:.55s}.brand.open .w:nth-child(3) i{transition-delay:1.05s}
+nav{display:flex;gap:2px;overflow-x:auto;max-width:100%}
+nav button{border:0;background:transparent;padding:8px 13px;border-radius:7px;cursor:pointer;white-space:nowrap;font-size:14px;font-weight:700;color:var(--mute)}
+nav button:hover{color:var(--ink);background:var(--soft)}nav button.on{background:var(--ink);color:var(--bg)}
+.hr{display:flex;align-items:center;gap:8px}
+.btn{border:2px solid var(--bd);border-bottom-width:5px;background:var(--card);border-radius:9px;padding:7px 16px 6px;cursor:pointer;font-weight:700;font-size:15px;transition:transform .08s}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:translateY(3px);border-bottom-width:2px}
+.btn.p{background:var(--acc);color:#15171c}.btn.sm{padding:4px 12px 3px;font-size:14px}.btn:disabled{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.streak{display:flex;align-items:center;gap:6px;border:2px solid var(--bd);border-radius:999px;background:var(--card);padding:4px 12px;cursor:pointer;font-weight:800;color:var(--mute)}
+.streak.on{background:var(--fire);color:#15171c}
+.av{width:38px;height:38px;border-radius:50%;border:2px solid var(--bd);background:var(--acc);color:#15171c;font:800 16px var(--disp);cursor:pointer}.av.big{width:84px;height:84px;font-size:34px;cursor:default;box-shadow:var(--sh)}
+.menu{display:none;position:absolute;right:0;top:48px;min-width:210px;background:var(--card);border:2px solid var(--bd);border-radius:10px;box-shadow:var(--sh);padding:6px;z-index:9}
+.menu.open{display:block}.menu .sub{padding:6px 10px;font-size:14px}.menu button{display:block;width:100%;text-align:left;border:0;background:transparent;padding:9px 10px;border-radius:6px;cursor:pointer;font-weight:700}.menu button:hover{background:var(--soft)}
+.cal{min-width:300px;padding:16px}.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.cg em{font:700 11px var(--mono);color:var(--mute);font-style:normal}
+.cg span{padding:6px 0;border:2px solid transparent;border-radius:7px;font:600 13px var(--mono)}.cg .on{background:var(--fire);color:#15171c;border-color:var(--bd)}.cg .now{border-color:var(--ink)}
+.back{border:2px solid var(--bd);border-bottom-width:4px;background:var(--card);border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;padding:3px 12px;margin-bottom:14px}.back:hover{background:var(--acc-t)}
+main{max-width:1060px;margin:0 auto;padding:30px 22px 80px}
+h1{font-size:clamp(40px,6.6vw,74px);line-height:.98;margin:6px 0 18px;letter-spacing:-.04em;font-weight:800}
+h2{display:flex;align-items:center;gap:14px;margin:40px 0 16px;font-size:24px;letter-spacing:-.02em;font-weight:800}h2:after{content:"";flex:1;height:2px;background:var(--bd);opacity:.25}#auth h2:after{display:none}
+mark{background:linear-gradient(transparent 55%,var(--acc) 55% 92%,transparent 92%);color:inherit;padding:0 3px}
+.sub{color:var(--mute);max-width:60ch}.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:16px}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:10px;padding:18px;box-shadow:var(--sh)}
+.stat b{display:block;font-size:36px;line-height:1.1;letter-spacing:-.03em;font-weight:800}.stat span{color:var(--mute)}
+.sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px}.sg .card{transition:transform .12s,box-shadow .12s}.sg .card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shc)}.sg .card>b{font-size:18px;letter-spacing:-.01em}
+.chip{display:inline-block;border:2px solid var(--bd);border-radius:999px;padding:2px 11px;margin:4px 6px 2px 0;cursor:pointer;background:var(--card);font-size:14px;font-weight:700}.chip:hover{background:var(--acc-t)}
+select,input[type=search],#auth input,#v-prof input{background:var(--card);border:2px solid var(--bd);border-radius:8px;padding:8px 12px}
 .view{display:none}.view.on{display:block}
-#box{font:22px/1.8 "JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;height:190px;overflow:hidden;position:relative;padding:14px 18px;border:1px solid var(--line);border-radius:14px;background:var(--card);cursor:text;word-break:break-word}
-#box span.c{color:var(--ok)}#box span.w{color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,transparent)}
-#box span.u{color:var(--mute)}#box span.cur{border-left:2px solid var(--pur);margin-left:-2px;color:var(--ink)}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center;margin:8px 0 36px}
+.demo{position:relative;background:var(--card) repeating-linear-gradient(transparent 0 33px,var(--soft) 33px 34px);border:2px solid var(--bd);border-radius:6px;box-shadow:var(--sh);min-height:236px;transform:rotate(1.3deg)}
+.demo:before{content:"";position:absolute;left:46px;top:0;bottom:0;width:2px;background:var(--acc);opacity:.75}
+.demo:after{content:"LIVE SPECIMEN";position:absolute;top:-13px;right:18px;background:var(--acc);color:#15171c;font:700 11px var(--mono);letter-spacing:.08em;padding:3px 9px;border:2px solid var(--bd);transform:rotate(-3deg)}
+.demo .dots{display:flex;padding:10px 16px 10px 62px;border-bottom:2px solid var(--bd);background:var(--card)}.demo .dots i{display:none}.demo .dots span{font:700 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+#dtxt{padding:8px 20px 18px 62px;font:600 18px/34px var(--mono);color:var(--ink)}.cr{display:inline-block;width:10px;height:1.1em;background:var(--acc);vertical-align:text-bottom;animation:bl 1s steps(2) infinite}@keyframes bl{50%{opacity:0}}
+.sk{display:flex;align-items:center;gap:14px}.sk b{font-size:56px;line-height:1;font-weight:800;letter-spacing:-.04em}.sk span{display:block}.flame{color:var(--fire);filter:drop-shadow(1px 1px 0 var(--shc))}
+.wk{display:flex;gap:10px;margin:14px 0}.wk span{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--mute)}
+.wk i{width:30px;height:30px;border-radius:8px;border:2px solid var(--bd);background:var(--soft)}.wk .on i{background:var(--fire)}.wk .now{color:var(--ink)}.wk .now i{box-shadow:3px 3px 0 var(--shc)}
+.heat{display:grid;grid-template-columns:repeat(7,26px);gap:6px}.heat i{width:26px;height:26px;border-radius:6px;border:2px solid var(--bd);background:var(--soft)}.heat .h1{background:#ffe3a0}.heat .h2{background:#ffc233}.heat .h3{background:#ff7a2f}
+.hitem{background:var(--card);border:2px solid var(--bd);border-radius:10px;margin-bottom:12px;padding:2px 16px;box-shadow:3px 3px 0 var(--shc)}
+.hitem summary{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:13px 0;cursor:pointer;list-style:none}.hitem summary b{flex:1;min-width:160px}
+.pill{border:2px solid var(--bd);border-radius:999px;padding:2px 10px}.hd{color:var(--mute)}
+.hp{border-left:4px solid var(--acc);padding:4px 0 4px 16px;margin:4px 0 14px;font:500 16px/1.9 var(--mono)}.hitem .btn{margin-bottom:14px}
+.pf{display:flex;gap:20px;align-items:center;margin:8px 0 24px}
+#box{font:600 21px/1.9 var(--mono);height:200px;overflow:hidden;position:relative;padding:16px 22px;border:2px solid var(--bd);border-radius:10px;background:var(--card);box-shadow:var(--sh);cursor:text;word-break:break-word}
+#box span.c{color:var(--ok)}#box span.w{color:var(--bad);background:color-mix(in srgb,var(--bad) 16%,transparent);border-radius:3px}#box span.u{color:var(--mute);font-weight:500}
+#box span.cur{color:var(--ink);background:var(--acc-t);box-shadow:inset 0 -3px 0 var(--acc);border-radius:2px}
 #ta{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px}
-.bar{height:8px;border-radius:8px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--pur))}
-.words .bad{color:var(--bad);font-weight:600}
-.ach{opacity:.4}.ach.got{opacity:1;border-color:var(--pur)}
-.drop{border:2px dashed var(--line);border-radius:16px;padding:36px;text-align:center;cursor:pointer}
-.drop.over{border-color:var(--pur);background:color-mix(in srgb,var(--pur) 8%,transparent)}
-svg text{fill:var(--mute);font-size:11px}
-#auth{display:none;position:fixed;inset:0;z-index:50;background:var(--bg);align-items:center;justify-content:center;padding:20px;overflow:auto}
-input[type=email],input[type=password]{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
-@media (max-width:600px){#box{font-size:18px}}
+.bar{height:10px;border:2px solid var(--bd);border-radius:6px;background:var(--soft);overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+.words .bad{color:var(--bad);font-weight:800}.ach{opacity:.45;box-shadow:none}.ach.got{opacity:1;border-color:var(--acc)}
+.drop{border:3px dashed var(--bd);border-radius:12px;padding:44px;text-align:center;cursor:pointer;background:var(--card)}.drop.over{background:var(--acc-t);border-color:var(--acc)}
+svg text{fill:var(--mute);font-size:11px}details.card summary{cursor:pointer;font-weight:800}
+#auth{display:none;position:fixed;inset:0;z-index:50;background:rgba(10,10,14,.6);align-items:center;justify-content:center;padding:20px;overflow:auto}
+#auth .pop{width:min(420px,94vw);position:relative;padding:26px}#auth label{display:block;margin-top:14px;font-size:14px;font-weight:800}#auth input{width:100%;margin-top:5px}
+#amsg{min-height:1.5em;margin:10px 0 6px;font-size:14px;font-weight:600}.x{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:28px;cursor:pointer;line-height:1;color:var(--mute)}
+.lnk{border:0;background:transparent;padding:0;color:var(--ink);text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:3px;text-underline-offset:3px;cursor:pointer;font-weight:800}
+@media (min-width:900px){.brand{min-width:300px}}
+@media (max-width:899px){.brand i{display:none}}
+@media (max-width:820px){.hero{grid-template-columns:1fr;gap:26px}.demo{transform:none}nav{order:3;width:100%}}
+@media (max-width:600px){#box{font-size:18px}main{padding:18px 14px 60px}header{padding:10px 14px}}
+@media (prefers-reduced-motion:reduce){.cr{animation:none}.btn,.sg .card{transition:none}.brand i{transition:none}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<div id="auth" role="dialog" aria-label="Log in"><div class="card" style="width:min(400px,92vw)">
-<h2 style="margin-top:0">Log in to Engineering Typing Master</h2>
-<p class="sub">Free to use. Create an account or log in to save your progress.</p>
-<label>Email<br><input type="email" id="aem" autocomplete="email" style="width:100%"></label>
-<p style="margin:10px 0 0"><label>Password<br><input type="password" id="apw" autocomplete="current-password" style="width:100%"></label></p>
-<p id="amsg" style="color:var(--bad);min-height:1.4em;margin:8px 0" role="alert"></p>
-<div class="row"><button class="btn p" id="alog">Log in</button><button class="btn" id="asign">Create account</button></div>
-<p><button class="btn" id="agoo" style="width:100%">Continue with Google</button></p>
-<button class="chip" id="afor">Forgot password?</button></div></div>
+<div id="auth" role="dialog" aria-modal="true" aria-label="Account"><div class="card pop">
+<button class="x" id="aclose" aria-label="Close">&times;</button>
+<div class="lab" id="atag">Welcome back</div>
+<h2 id="atitle" style="margin:0">Log in</h2>
+<label id="anl">Your name<input id="anm" autocomplete="name"></label>
+<label>Email<input type="email" id="aem" autocomplete="email"></label>
+<label>Password<input type="password" id="apw" autocomplete="current-password"></label>
+<p id="amsg" role="alert"></p>
+<button class="btn p" id="aok" style="width:100%">Log in</button>
+<button class="btn" id="agoo" style="width:100%;display:none;margin-top:8px">Continue with Google</button>
+<p class="sub" style="margin:14px 0 0"><span id="aswt">New here?</span> <button class="lnk" id="asw">Create an account</button> <button class="lnk" id="afor" style="display:none;margin-left:10px">Forgot password?</button></p>
+</div></div>
 <header>
-  <div class="logo">Engineering Typing Master</div>
+  <button class="brand" id="brand" data-go="home" aria-label="Engineering Typing Master"><span class="w"><b>E</b><i style="--n:10">ngineering</i></span><span class="w"><b>T</b><i style="--n:5">yping</i></span><span class="w"><b>M</b><i style="--n:5">aster</i></span></button>
   <nav id="nav">
-    <button data-v="home" class="on">Dashboard</button>
-    <button data-v="lib">Subjects</button>
-    <button data-v="pdf">My PDF</button>
-    <button data-v="prog">Progress</button>
+    <button data-v="home" class="on">Dashboard</button><button data-v="lib">Subjects</button><button data-v="pdf">My notes</button><button data-v="hist">History</button><button data-v="prog">Progress</button>
   </nav>
-  <span class="sub" id="who" style="display:none"></span><button class="btn" id="logout" style="display:none">Log out</button><button class="btn" id="theme" aria-label="Toggle light or dark mode">Theme</button>
+  <div class="hr">
+    <span style="position:relative"><button class="streak" id="sChip" title="Daily streak calendar" aria-label="Daily streak calendar" aria-haspopup="true"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 1c0-1-1-2-1-3 3 2 5 4 5 7a7 7 0 0 1-14 0c0-6 7-8 7-14z" fill="currentColor"/></svg><span id="sN">0</span></button><div class="menu cal" id="scal"></div></span>
+    <button class="btn sm" id="theme" aria-label="Toggle light or dark mode">Theme</button>
+    <span id="guest" class="hr"><button class="btn sm" id="bLog">Log in</button><button class="btn p sm" id="bSign">Sign up</button></span>
+    <span id="user" style="display:none;position:relative"><button class="av" id="avb" aria-haspopup="true" aria-expanded="false" aria-label="Account menu">S</button>
+      <div class="menu" id="menu"><div class="sub" id="mName"></div><button data-go="prof">My profile</button><button id="mOut">Log out</button></div></span>
+  </div>
 </header>
+
 <main>
+<button class="back" id="back" style="display:none">&larr; Back</button>
 
 <section class="view on" id="v-home">
-  <h1>Type faster. Learn your syllabus.</h1>
-  <p class="sub">Every passage comes from an engineering subject or your own notes, so each minute of practice also revises what you need to know.</p>
-  <div class="row" style="margin:16px 0">
-    <button class="btn p" id="goDaily">Start today's challenge</button>
-    <button class="btn" data-go="lib">Choose a subject</button>
-    <button class="btn" data-go="pdf">Upload a PDF</button>
+  <div class="hero"><div>
+    <div class="lab">Syllabus-aware typing practice</div>
+    <h1>Type faster.<br>Learn <mark>while</mark> you type.</h1>
+    <p class="sub">Every passage is real engineering content from your syllabus or your own notes. Speed comes as a side effect of studying.</p>
+    <div class="row" style="margin:18px 0"><button class="btn p" id="goDaily">Today's challenge</button><button class="btn" data-go="lib">Pick a subject</button><button class="btn" data-go="pdf">Use my notes</button></div>
   </div>
+  <div class="demo" aria-hidden="true"><div class="dots"><i></i><i></i><i></i><span>passage.txt</span></div><div id="dtxt"></div></div></div>
+  <div class="card" id="scard" style="margin-bottom:24px"></div>
   <div class="grid" id="stats"></div>
   <h2>Continue learning</h2>
   <div class="sg" id="cont"></div>
@@ -94,6 +140,8 @@ input[type=email],input[type=password]{background:var(--card);border:1px solid v
   </div>
   <div class="sg" id="subs"></div>
 </section>
+<section class="view" id="v-subj"></section>
+<section class="view" id="v-chap"></section>
 
 <section class="view" id="v-type">
   <div id="setup" class="card">
@@ -104,7 +152,7 @@ input[type=email],input[type=password]{background:var(--card);border:1px solid v
       <label>Length <select id="len"><option value="50">50 words</option><option value="100" selected>100 words</option><option value="200">200 words</option><option value="500">500 words</option><option value="1000">1000 words</option><option value="2000">2000 words</option></select></label>
       <label>Time <select id="tim"><option value="60" selected>1 minute</option><option value="180">3 minutes</option><option value="300">5 minutes</option><option value="600">10 minutes</option><option value="1800">30 minutes</option></select></label>
     </div>
-    <button class="btn p" id="startBtn">Start typing</button>
+    <button class="btn p" id="startBtn">Start typing</button><p class="sub" id="gmsg" role="status"></p>
   </div>
   <div id="test" style="display:none">
     <div class="row" style="justify-content:space-between;margin-bottom:10px"><div><b id="tSub"></b><div class="sub" id="tMeta"></div></div><div style="font-size:34px;font-weight:700" id="clock">01:00</div></div>
@@ -153,6 +201,25 @@ input[type=email],input[type=password]{background:var(--card);border:1px solid v
   <p><button class="btn" id="reset">Clear my data</button></p>
 </section>
 
+<section class="view" id="v-hist">
+  <div class="lab">Revision log</div><h2 style="margin-top:0">History</h2>
+  <p class="sub" style="margin-bottom:16px">Every passage you have typed. Open one to read it again, or type it once more.</p>
+  <div id="hlist"></div>
+</section>
+<section class="view" id="v-prof">
+  <div class="lab">Student profile</div>
+  <div class="pf"><div class="av big" id="pAv">S</div><div><h1 id="pName" style="font-size:clamp(30px,5vw,48px);margin:0"></h1><p class="sub" id="pMail" style="margin:0"></p></div></div>
+  <div class="card sub" id="pGuest" style="display:none;margin-bottom:16px">You are using a guest profile. Sign up to keep your progress under your own name.</div>
+  <div class="grid" id="pfStats"></div>
+  <h2>Last 28 days</h2><div class="card"><div class="heat" id="heat"></div></div>
+  <h2>Edit profile</h2>
+  <div class="card"><div class="row" style="align-items:flex-end">
+    <label>Name<br><input id="eName" maxlength="40"></label>
+    <label>Branch<br><select id="eBr"><option value="">Not set</option><option>CSE</option><option>IT</option><option>ECE</option><option>EE</option><option>ME</option><option>Civil</option></select></label>
+    <label>Semester<br><select id="eSem"><option value="">Not set</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></label>
+    <button class="btn p" id="eSave">Save profile</button></div><p class="sub" id="eMsg" style="margin:10px 0 0"></p></div>
+</section>
+
 </main>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
@@ -162,24 +229,24 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 // ---- content: [branch, semester, subject, [[topic, [sentences], keyTerms]]] ----
 const D=[
-["CSE",3,"Data Structures and Algorithms",[
+["CSE,IT,AI and ML,Data Science",3,"Data Structures and Algorithms",[
  ["Linked Lists",["A linked list is a linear data structure in which elements are stored in nodes.","Each node holds data and a reference to the next node in the sequence.","Insertion at the head takes constant time because only one pointer changes.","Searching requires traversal from the head, which takes linear time."],"node, pointer, traversal, head, tail"],
  ["Sorting and Searching",["Binary search finds an item in a sorted array by repeatedly halving the search range.","Bubble sort swaps adjacent elements that are out of order and takes quadratic time.","Merge sort divides the array, sorts each half and merges them in n log n time.","Quick sort partitions the array around a pivot and sorts the parts recursively."],"pivot, partition, merge, swap, comparison"],
  ["Stacks and Queues",["A stack follows the last in, first out rule, so the newest element leaves first.","A queue follows the first in, first out rule, so the oldest element leaves first.","Push and pop on a stack run in constant time when implemented with an array.","Queues power breadth first search and operating system job scheduling."],"push, pop, enqueue, dequeue, overflow"],
  ["Binary Trees",["A binary tree is a hierarchy where every node has at most two children.","Inorder traversal of a binary search tree visits the keys in sorted order.","A balanced tree keeps its height close to log n, so lookups stay fast.","An AVL tree restores balance with rotations after each insertion."],"inorder, preorder, height, rotation, subtree"]]],
-["CSE",4,"Database Management Systems",[
+["CSE,IT,AI and ML,Data Science",4,"Database Management Systems",[
  ["Normalization",["Normalization organizes a relational schema to reduce redundancy and update anomalies.","A table is in first normal form when every attribute holds only atomic values.","Second normal form removes partial dependencies on a composite primary key.","Third normal form removes transitive dependencies between non key attributes."],"anomaly, dependency, atomic, schema, decomposition"],
  ["Transactions",["A transaction is a unit of work that must either complete fully or not at all.","Atomicity, consistency, isolation and durability together are called the ACID properties.","Locking protocols such as two phase locking ensure serializable schedules.","A deadlock occurs when transactions wait on each other forever."],"atomicity, isolation, durability, commit, rollback"]]],
-["CSE",4,"Operating Systems",[
+["CSE,IT,AI and ML,Data Science",4,"Operating Systems",[
  ["CPU Scheduling",["Process scheduling is the activity of selecting a process from the ready queue.","First come first served is simple but a long job can delay every short job behind it.","Round robin gives each process a fixed time quantum to share the processor fairly.","Shortest job first minimizes average waiting time but needs burst time estimates."],"quantum, preemption, throughput, turnaround, dispatcher"],
  ["Memory Management",["Paging divides physical memory into fixed size frames and logical memory into pages.","A page table maps each logical page number to a physical frame number.","A page fault occurs when a process accesses a page that is not in memory.","Virtual memory lets programs run even when they are larger than physical memory."],"paging, segmentation, thrashing, frame, swapping"]]],
-["CSE",5,"Computer Networks",[
+["CSE,IT,AI and ML,Data Science",5,"Computer Networks",[
  ["TCP and UDP",["TCP provides reliable, ordered delivery by using acknowledgements and retransmission.","A three way handshake establishes a TCP connection before any data is sent.","UDP is connectionless and trades reliability for lower latency.","Congestion control keeps a sender from overwhelming the network."],"handshake, segment, latency, congestion, socket"],
  ["IP Addressing",["An IPv4 address is a thirty two bit number written as four decimal octets.","A subnet mask separates the network portion of an address from the host portion.","Routers forward packets by matching the destination against entries in a routing table.","IPv6 uses one hundred twenty eight bit addresses to solve address exhaustion."],"subnet, router, gateway, prefix, packet"]]],
-["CSE",3,"Java Programming",[
+["CSE,IT,AI and ML,Data Science",3,"Java Programming",[
  ["Object Oriented Concepts",["Encapsulation bundles data and the methods that operate on it inside a class.","Inheritance lets a subclass reuse and extend the behavior of a superclass.","Polymorphism allows one interface to be implemented by many different classes.","An abstract class cannot be instantiated and may declare methods without bodies."],"inheritance, polymorphism, interface, abstraction, constructor"],
  ["Exception Handling",["An exception is an event that disrupts the normal flow of a program.","Code that may fail is placed in a try block and handled in a catch block.","The finally block runs whether or not an exception was thrown.","Checked exceptions must be declared or handled, but unchecked exceptions need not be."],"throw, throws, catch, finally, runtime"]]],
-["CSE",5,"Machine Learning",[
+["CSE,IT,AI and ML,Data Science",5,"Machine Learning",[
  ["Supervised Learning",["Supervised learning trains a model on labeled examples to predict outputs for new inputs.","Linear regression fits a line that minimizes the squared error between predictions and targets.","Overfitting happens when a model memorizes noise instead of learning the underlying pattern.","Cross validation estimates how well a model will generalize to unseen data."],"regression, classification, overfitting, gradient, validation"]]],
 ["B.Tech Common",1,"Engineering Mathematics I and II",[
  ["Calculus",["A derivative measures how fast a function changes at a point.","The chain rule differentiates a composite function by multiplying the derivatives of its parts.","A definite integral gives the area under a curve between two limits.","A Taylor series approximates a function near a point using its derivatives."],"limit, derivative, integral, series, continuity"],
@@ -187,7 +254,7 @@ const D=[
  ["Differential Equations",["A differential equation relates a function to its derivatives.","The order of an equation is the highest derivative that appears in it.","Separable equations can be solved by integrating each variable on its own side.","A linear first order equation is solved using an integrating factor."],"derivative, integral, solution, order, homogeneous"]]],
 ["B.Tech Common",2,"Basic Electrical and Electronics Engineering",[
  ["Circuit Laws",["Ohm's law states that voltage across a resistor equals current multiplied by resistance.","Kirchhoff's current law says the currents entering a node sum to zero.","Kirchhoff's voltage law says the voltages around any closed loop sum to zero.","Resistors in series add directly, while resistors in parallel add as reciprocals."],"voltage, current, resistance, node, loop"]]],
-["CSE",3,"Digital Logic and Design",[
+["CSE,IT,ECE,EEE",3,"Digital Logic and Design",[
  ["Logic Gates",["A logic gate performs a Boolean operation on one or more binary inputs.","The NAND gate is universal because any other gate can be built from it.","A multiplexer selects one of many input lines and forwards it to a single output.","A flip flop stores one bit and changes state on a clock edge."],"boolean, multiplexer, flip flop, clock, truth table"]]],
 ["B.Tech Common",1,"Engineering Physics and Physics Lab",[
  ["Waves and Optics",["Interference occurs when two coherent waves overlap and their amplitudes add.","In Young's double slit experiment, bright fringes appear where the path difference is a whole number of wavelengths.","Diffraction is the bending of light around an obstacle or through a narrow opening.","A laser produces coherent light through stimulated emission of radiation."],"coherence, fringe, diffraction, wavelength, polarization"],
@@ -203,36 +270,150 @@ const D=[
  ["Technical Writing",["Technical writing explains complex information clearly to a specific audience.","A good report has a title, summary, body, conclusion and list of references.","Use short sentences and active voice so that instructions are easy to follow.","A professional email states its purpose in the first line and ends with a clear request."],"audience, summary, report, clarity, proofreading"]]],
 ["B.Tech Common",2,"Environmental Science and Engineering",[
  ["Ecosystems and Pollution",["An ecosystem is a community of living things interacting with their physical environment.","Energy flows through a food chain from producers to consumers and decomposers.","Air pollution comes from vehicles, industries and the burning of fossil fuels.","Sustainable development meets present needs without harming the ability of future generations to meet theirs."],"ecosystem, biodiversity, emission, renewable, sustainability"]]],
-["CSE",3,"Discrete Mathematics and Graph Theory",[
+["CSE,IT,AI and ML,Data Science",3,"Discrete Mathematics and Graph Theory",[
  ["Sets, Logic and Graphs",["A set is a well defined collection of distinct objects.","A proposition is a statement that is either true or false but never both.","A graph consists of vertices connected by edges.","A tree is a connected graph that contains no cycles."],"proposition, relation, vertex, edge, induction"]]],
-["CSE",3,"Object Oriented Programming with C++",[
+["CSE,IT,AI and ML,Data Science",3,"Object Oriented Programming with C++",[
  ["Classes and Objects",["A class is a blueprint, and an object is an instance created from that blueprint.","A constructor runs automatically when an object is created.","Function overloading lets several functions share a name but take different parameters.","Virtual functions enable runtime polymorphism through base class pointers."],"class, object, constructor, overloading, virtual"]]],
-["CSE",4,"Computer Organization and Architecture",[
+["CSE,IT,AI and ML,Data Science",4,"Computer Organization and Architecture",[
  ["CPU and Pipelining",["The central processing unit fetches, decodes and executes instructions in a repeating cycle.","A register is a small, very fast storage location inside the processor.","Pipelining overlaps the stages of several instructions to raise throughput.","A cache stores recently used data close to the processor to reduce memory access time."],"register, pipeline, cache, hazard, instruction set"]]],
-["CSE",4,"Principles of Programming Languages",[
+["CSE,IT,AI and ML,Data Science",4,"Principles of Programming Languages",[
  ["Language Concepts",["A programming language is defined by its syntax and its semantics.","Static typing checks types at compile time, while dynamic typing checks them at run time.","Scope rules decide where in a program a name can be used.","Functional languages treat functions as values and avoid changing state."],"syntax, semantics, binding, scope, paradigm"]]],
-["CSE",4,"Probability, Statistics and Stochastic Processes",[
+["CSE,IT,AI and ML,Data Science,ECE",4,"Probability, Statistics and Stochastic Processes",[
  ["Probability Basics",["Probability measures how likely an event is, on a scale from zero to one.","Conditional probability gives the chance of an event once another event is known to have happened.","Bayes theorem updates a belief using new evidence.","The mean describes the center of a data set and the standard deviation describes its spread."],"random variable, distribution, expectation, variance, Markov chain"]]],
-["CSE",5,"Design and Analysis of Algorithms",[
+["CSE,IT,AI and ML,Data Science",5,"Design and Analysis of Algorithms",[
  ["Complexity and Strategies",["Big O notation describes how running time grows as the input size grows.","Divide and conquer splits a problem into smaller parts and combines their solutions.","Dynamic programming stores the answers to overlapping subproblems to avoid repeated work.","A greedy algorithm makes the best local choice at every step."],"asymptotic, recurrence, greedy, memoization, optimal"]]],
-["CSE",5,"Software Engineering and Project Lab",[
+["CSE,IT,AI and ML,Data Science",5,"Software Engineering and Project Lab",[
  ["Process Models",["The waterfall model completes each phase fully before the next one begins.","Agile development delivers working software in short iterations and welcomes changing requirements.","A requirements document states what the system must do and under which constraints.","Testing finds defects, and unit, integration and system tests check different levels of the software."],"requirement, agile, sprint, testing, maintenance"]]],
-["CSE",5,"Theory of Computation",[
+["CSE,IT,AI and ML,Data Science",5,"Theory of Computation",[
  ["Automata and Languages",["A finite automaton is a machine with a finite set of states that reads an input string.","A regular expression describes a pattern that a finite automaton can recognize.","A pushdown automaton adds a stack and can recognize context free languages.","A Turing machine reads and writes on an infinite tape and models any computable function."],"state, alphabet, grammar, Turing machine, decidable"]]],
-["CSE",5,"Microprocessors and Microcontrollers",[
+["CSE,IT,ECE,EEE",5,"Microprocessors and Microcontrollers",[
  ["8086 and Microcontrollers",["A microprocessor is a single chip that contains the central processing unit.","The 8086 is a sixteen bit processor with a segmented memory model.","A microcontroller combines a processor, memory and input and output ports on one chip.","An interrupt pauses the running program so the processor can serve an urgent event."],"interrupt, register, segment, port, assembly"]]],
-["CSE",6,"Compiler Design",[
+["CSE,IT,AI and ML,Data Science",6,"Compiler Design",[
  ["Phases of a Compiler",["A compiler translates source code written in a high level language into machine code.","The lexical analyzer reads characters and groups them into tokens.","The parser checks that the tokens follow the grammar of the language and builds a parse tree.","Optimization improves the generated code without changing what it does."],"lexer, token, parser, grammar, code generation"]]],
-["CSE",6,"Web Technologies",[
+["CSE,IT,AI and ML,Data Science",6,"Web Technologies",[
  ["HTML, CSS and JavaScript",["HTML gives a web page its structure, and CSS controls how it looks.","JavaScript adds behavior and runs inside the browser.","The box model describes the content, padding, border and margin around every element.","A REST API lets a web page request data from a server using standard HTTP methods."],"element, selector, DOM, request, responsive"]]],
-["CSE",6,"Artificial Intelligence Essentials",[
+["CSE,IT,AI and ML,Data Science",6,"Artificial Intelligence Essentials",[
  ["Search and Agents",["An intelligent agent perceives its environment and acts to achieve its goals.","Breadth first search explores all nodes at one depth before moving deeper.","The A star algorithm uses a heuristic to find the cheapest path efficiently.","Knowledge representation stores facts in a form that a program can reason about."],"agent, heuristic, search, inference, knowledge base"]]],
-["CSE",6,"Open and Departmental Electives I",[
+["CSE,IT,AI and ML,Data Science",6,"Open and Departmental Electives I",[
  ["Cyber Security",["Confidentiality, integrity and availability are the three goals of information security.","Encryption turns readable data into ciphertext that only a key holder can read.","A firewall filters network traffic according to a set of security rules.","Phishing tricks people into giving away passwords by pretending to be a trusted sender."],"encryption, firewall, authentication, malware, phishing"],
  ["Cloud Computing",["Cloud computing delivers computing resources over the internet on demand.","Infrastructure, platform and software as a service are the three main service models.","Virtualization lets many virtual machines share one physical server.","Elastic scaling adds or removes resources as the workload changes."],"virtualization, scalability, storage, instance, deployment"],
  ["Data Mining",["Data mining finds useful patterns in very large data sets.","Clustering groups similar records without using labels.","Association rules reveal items that are often bought together.","Data must be cleaned and prepared before any mining algorithm is applied."],"clustering, association, preprocessing, pattern, outlier"]]]
 ];
-const ALL=[];D.forEach(([b,s,sub,ts])=>ts.forEach(([t,x,k])=>ALL.push({b,s,sub,t,x,k,key:sub+'|'+t})));
+const ALL=[],CS='CSE,IT,AI and ML,Data Science',CAT=`@c|3|Data Structures and Algorithms|Arrays and Strings;Hashing;Heaps and Priority Queues;Graph Traversal;Trie and Segment Tree
+@c|3|Discrete Mathematics and Graph Theory|Combinatorics;Boolean Algebra;Recurrence Relations;Graph Coloring
+@c|3|Java Programming|Collections Framework;Multithreading;Generics;File Handling;Lambda Expressions
+@c|4|Operating Systems|Process Synchronization;Deadlocks;File Systems;Disk Scheduling;Threads
+@c|4|Database Management Systems|SQL Queries;ER Model;Indexing and B+ Trees;Concurrency Control;Relational Algebra
+@c|4|Computer Organization and Architecture|Memory Hierarchy;Instruction Formats;Addressing Modes;Input Output Organization
+@c|5|Computer Networks|Routing Algorithms;Application Layer Protocols;Network Security;Data Link Layer;Wireless Networks
+@c|5|Design and Analysis of Algorithms|Sorting Lower Bounds;Graph Algorithms;NP Completeness;Backtracking
+@c|5|Machine Learning|Decision Trees;Neural Networks;Clustering;Dimensionality Reduction;Reinforcement Learning
+@c|5|Theory of Computation|Context Free Grammars;Pumping Lemma;Undecidability
+@c|6|Compiler Design|Syntax Directed Translation;Intermediate Code;Symbol Table;Code Optimization
+@c|6|Web Technologies|Node and Express;React Basics;Databases for Web;Web Security
+@c|6|Artificial Intelligence Essentials|Natural Language Processing;Expert Systems;Constraint Satisfaction;Game Playing
+@c|7|Cryptography and Network Security|Symmetric Encryption;Public Key Cryptography;Hash Functions;Digital Signatures
+@c|7|Cloud Computing|Virtualization;Cloud Service Models;Containers and Orchestration;Cloud Security
+@c|7|Big Data Analytics|Hadoop and MapReduce;Spark;NoSQL Databases;Data Streaming
+@c|7|Internet of Things|Sensors and Actuators;IoT Protocols;Edge Computing;IoT Security
+@c|7|Deep Learning|Convolutional Networks;Recurrent Networks;Transformers;Optimization Methods
+@c|8|Major Project and Seminar|Problem Definition;Literature Survey;System Design;Testing and Documentation;Technical Presentation
+@c|8|Professional Ethics and Entrepreneurship|Engineering Ethics;Intellectual Property;Startup Basics;Professional Communication
+B.Tech Common|1|Engineering Mathematics I and II|Partial Derivatives;Multiple Integrals;Vector Calculus;Laplace Transforms;Fourier Series
+B.Tech Common|1|Engineering Physics and Physics Lab|Semiconductors;Fibre Optics;Magnetic Materials;Superconductivity
+B.Tech Common|1|Engineering Chemistry and Chemistry Lab|Polymers;Fuels and Combustion;Spectroscopy;Batteries and Fuel Cells
+B.Tech Common|1|Programming for Problem Solving|Functions and Recursion;Strings;Structures;File Handling
+B.Tech Common|2|Basic Electrical and Electronics Engineering|AC Circuits;Transformers;Diodes and Transistors;Operational Amplifiers
+B.Tech Common|2|Environmental Science and Engineering|Water Pollution;Solid Waste Management;Climate Change;Environmental Laws
+B.Tech Common|2|Engineering Mechanics|Equilibrium of Forces;Friction;Centroid and Inertia;Kinematics of Particles;Work and Energy
+ECE|3|Network Analysis and Synthesis|Network Theorems;Two Port Networks;Transient Analysis;Filters
+ECE|3|Electronic Devices and Circuits|PN Junction Diode;BJT Biasing;FET and MOSFET;Amplifiers
+ECE|3|Signals and Systems|Fourier Transform;Laplace Transform;Convolution;Sampling Theorem
+ECE|4|Analog Communication|Amplitude Modulation;Frequency Modulation;Noise in Communication;Radio Receivers
+ECE|4|Electromagnetic Field Theory|Maxwell Equations;Wave Propagation;Transmission Lines;Antennas
+ECE|4|Linear Integrated Circuits|Op-Amp Applications;Timers;Voltage Regulators;Active Filters
+ECE|5|Digital Signal Processing|Discrete Fourier Transform;FFT Algorithms;FIR Filters;IIR Filters
+ECE|5|Digital Communication|Pulse Code Modulation;Digital Modulation;Information Theory;Error Control Coding
+ECE,EEE|5|Control Systems|Transfer Functions;Stability Analysis;Root Locus;Frequency Response;State Space Analysis
+ECE|6|VLSI Design|CMOS Logic;Layout and Design Rules;Memory Design;Timing Analysis
+ECE|6|Microwave and Antenna Engineering|Waveguides;Microwave Devices;Antenna Arrays;Radar Basics
+ECE|7|Wireless and Mobile Communication|Cellular Concepts;Multiple Access;Fading Channels;5G Systems
+ECE|7|Embedded Systems|ARM Architecture;Real Time Operating Systems;Interfacing;Embedded C
+ECE|7|Optical Fibre Communication|Fibre Types;Optical Sources;Detectors;Link Design
+EEE|3|Electrical Machines I|DC Generators;DC Motors;Transformer Testing;Three Phase Transformers
+EEE|3|Electromagnetic Fields|Electrostatics;Magnetostatics;Maxwell Equations;Wave Equations
+EEE|4|Electrical Machines II|Induction Motors;Synchronous Generators;Synchronous Motors;Special Machines
+EEE|4|Power Systems I|Transmission Line Parameters;Insulators;Cables;Corona
+EEE|4|Measurements and Instrumentation|Measuring Instruments;Bridges;Transducers;Digital Meters
+EEE|5|Power Electronics|Thyristors;Rectifiers;Choppers;Inverters
+EEE|5|Power Systems II|Load Flow Studies;Fault Analysis;Power System Stability;Protection Relays
+EEE|6|Switchgear and Protection|Circuit Breakers;Relays;Lightning Protection;Substations
+EEE|6|Electric Drives|DC Drives;AC Drives;Speed Control;Traction Drives
+EEE|7|Renewable Energy Systems|Solar Photovoltaics;Wind Energy;Energy Storage;Smart Grids
+EEE|7|High Voltage Engineering|Breakdown in Gases;Impulse Voltage;Testing Techniques
+ME|3|Engineering Thermodynamics|Laws of Thermodynamics;Entropy;Gas Power Cycles;Properties of Steam
+ME|3|Strength of Materials|Stress and Strain;Bending Moment;Torsion;Columns and Struts
+ME|3|Fluid Mechanics|Fluid Statics;Bernoulli Equation;Flow Through Pipes;Boundary Layer
+ME|4|Kinematics of Machinery|Mechanisms;Cams;Gears;Gear Trains
+ME|4|Manufacturing Processes|Casting;Welding;Forming;Machining
+ME|4|Materials Science|Crystal Structures;Phase Diagrams;Heat Treatment;Mechanical Testing
+ME|5|Heat and Mass Transfer|Conduction;Convection;Radiation;Heat Exchangers
+ME|5|Design of Machine Elements|Failure Theories;Shafts and Keys;Bearings;Springs
+ME|5|Dynamics of Machinery|Balancing;Vibrations;Governors;Flywheels
+ME|6|Internal Combustion Engines|Engine Cycles;Combustion in Engines;Fuel Systems;Emission Control
+ME|6|Refrigeration and Air Conditioning|Vapour Compression Cycle;Psychrometrics;Refrigerants;Cooling Load
+ME|6|CAD CAM and Robotics|Geometric Modelling;CNC Programming;Robot Kinematics;Additive Manufacturing
+ME|7|Turbomachinery|Pumps;Turbines;Compressors;Cavitation
+ME|7|Industrial Engineering|Work Study;Production Planning;Quality Control;Operations Research
+Civil|3|Surveying|Chain Surveying;Levelling;Theodolite;Total Station and GPS
+Civil|3|Building Materials and Construction|Cement and Concrete;Bricks and Masonry;Timber and Steel;Foundations
+Civil|3|Structural Analysis I|Truss Analysis;Influence Lines;Deflection of Beams;Arches
+Civil|4|Hydraulics and Hydraulic Machines|Open Channel Flow;Hydraulic Jump;Pumps and Turbines;Flow Measurement
+Civil|4|Geotechnical Engineering|Soil Classification;Permeability;Consolidation;Shear Strength
+Civil|4|Concrete Technology|Mix Design;Workability;Admixtures;Durability
+Civil|5|Design of Reinforced Concrete Structures|Limit State Method;Beams;Slabs;Columns
+Civil|5|Transportation Engineering|Highway Geometric Design;Pavement Design;Traffic Engineering;Railway Engineering
+Civil|5|Environmental Engineering|Water Treatment;Wastewater Treatment;Air Pollution Control;Solid Waste
+Civil|6|Design of Steel Structures|Bolted Connections;Welded Connections;Tension Members;Compression Members
+Civil|6|Hydrology and Water Resources|Rainfall Analysis;Runoff;Flood Routing;Irrigation Engineering
+Civil|7|Estimation and Quantity Surveying|Quantity Estimation;Rate Analysis;Specifications;Tendering
+Civil|7|Construction Management|Project Planning;CPM and PERT;Safety Management;Contracts
+Chemical|3|Chemical Process Calculations|Material Balances;Energy Balances;Stoichiometry;Recycle and Purge
+Chemical|3|Fluid Mechanics for Chemical Engineers|Flow Measurement;Pumps;Fluidization;Non-Newtonian Fluids
+Chemical|4|Heat Transfer Operations|Conduction;Heat Exchangers;Evaporators;Boiling and Condensation
+Chemical|4|Chemical Engineering Thermodynamics|Phase Equilibria;Fugacity;Chemical Reaction Equilibria;Refrigeration Cycles
+Chemical|5|Mass Transfer|Diffusion;Distillation;Absorption;Liquid Extraction
+Chemical|5|Chemical Reaction Engineering|Reaction Kinetics;Ideal Reactors;Non-Ideal Flow;Catalysis
+Chemical|6|Process Control and Instrumentation|Process Dynamics;Controllers;Control Valves;Advanced Control
+Chemical|6|Process Equipment Design|Pressure Vessels;Heat Exchanger Design;Distillation Column Design;Storage Tanks
+Chemical|7|Petroleum Refining|Crude Distillation;Catalytic Cracking;Reforming;Product Blending
+Chemical|7|Process Safety and Plant Design|HAZOP;Risk Assessment;Process Economics;Plant Layout
+Biotech|3|Biochemistry|Proteins;Enzymes;Carbohydrates and Lipids;Metabolism
+Biotech|3|Cell Biology|Cell Structure;Cell Cycle;Membrane Transport;Cell Signalling
+Biotech|4|Genetics and Molecular Biology|DNA Replication;Transcription;Translation;Gene Regulation
+Biotech|4|Microbiology|Bacterial Growth;Sterilization;Virology;Industrial Microbiology
+Biotech|5|Genetic Engineering|Restriction Enzymes;Cloning Vectors;PCR;CRISPR
+Biotech|5|Bioprocess Engineering|Fermentation;Bioreactor Design;Downstream Processing;Enzyme Kinetics
+Biotech|6|Immunology|Innate Immunity;Antibodies;Vaccines;Hypersensitivity
+Biotech|6|Bioinformatics|Sequence Alignment;Biological Databases;Phylogenetics;Protein Structure Prediction
+Biotech|7|Animal and Plant Biotechnology|Tissue Culture;Transgenic Plants;Stem Cells;Biosafety
+Aerospace|3|Aerodynamics I|Airfoil Theory;Lift and Drag;Boundary Layers;Compressible Flow
+Aerospace|3|Aircraft Structures|Stress Analysis;Thin Walled Beams;Fatigue;Composite Materials
+Aerospace|4|Aircraft Propulsion|Jet Engines;Turbofans;Rocket Propulsion;Combustion
+Aerospace|4|Flight Mechanics|Aircraft Performance;Stability;Control Surfaces;Climbing and Gliding
+Aerospace|5|Avionics|Flight Instruments;Navigation Systems;Autopilot;Radar
+Aerospace|5|Space Dynamics|Orbital Mechanics;Satellite Orbits;Re-entry;Launch Vehicles
+Aerospace|6|Computational Fluid Dynamics|Finite Volume Method;Grid Generation;Turbulence Models;Solution Schemes
+AI and ML|4|Mathematics for Machine Learning|Linear Algebra for ML;Probability for ML;Optimization;Information Theory
+AI and ML|5|Natural Language Processing|Tokenization;Word Embeddings;Language Models;Machine Translation
+AI and ML|6|Computer Vision|Image Processing;Feature Detection;Object Detection;Image Segmentation
+AI and ML|7|Reinforcement Learning|Markov Decision Processes;Q-Learning;Policy Gradients;Multi-Agent Systems
+Data Science|4|Statistics for Data Science|Descriptive Statistics;Hypothesis Testing;Regression Analysis;Bayesian Inference
+Data Science|5|Data Mining and Warehousing|Association Rules;Classification Methods;Data Warehouse Design;OLAP
+Data Science|6|Data Visualization|Visual Design Principles;Dashboards;Exploratory Analysis;Storytelling with Data`;
+D.forEach(([b,s,sub,ts])=>ts.forEach(([t,x,k])=>ALL.push({b,s,sub,t,x,k,key:sub+'|'+t})));
+CAT.split('\n').forEach(l=>{const [b,s,sub,ts]=l.split('|');ts.split(';').forEach(t=>{if(!ALL.some(a=>a.key===sub+'|'+t))ALL.push({b:b==='@c'?CS:b,s:+s,sub,t,x:null,k:'',key:sub+'|'+t})})});
+try{const g=JSON.parse(localStorage.getItem('etm_gen')||'{}');ALL.forEach(a=>{if(!a.x&&g[a.key]){a.x=g[a.key].x;a.k=g[a.key].k}})}catch(e){}
 // ---- storage ----
 let UK='',S={results:[]},mem=null;
 try{S=JSON.parse(localStorage.getItem('etm'+UK)||'{"results":[]}')}catch(e){}
@@ -240,9 +421,14 @@ try{mem=JSON.parse(localStorage.getItem('etmpdf'+UK)||'null')}catch(e){}
 const save=()=>{try{localStorage.setItem('etm'+UK,JSON.stringify(S))}catch(e){}};
 let PDF=mem;
 // ---- navigation ----
-function go(v){$$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
- $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
- if(v==='home')renderHome();if(v==='prog')renderProg();if(v==='lib')renderLib();scrollTo(0,0)}
+let VIEW='home',HIST=[];
+var LG={},SJ=null,CHP=null;
+function go(v,nopush){if(!nopush&&v!==VIEW){HIST.push(VIEW);if(HIST.length>30)HIST.shift()}VIEW=v;
+ $$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
+ $$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===(v==='subj'||v==='chap'?'lib':v)));
+ $('#back').style.display=v==='home'?'none':'';$('#menu').classList.remove('open');
+ const f={home:renderHome,prog:renderProg,lib:renderLib,subj:renderSubj,chap:renderChap,hist:renderHist,prof:renderProf}[v];if(f)f();scrollTo(0,0)}
+function back(){stop();go(HIST.pop()||'home',true)}
 $$('#nav button').forEach(b=>b.onclick=()=>{stop();go(b.dataset.v)});
 document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){stop();go(g.dataset.go)}});
 $('#theme').onclick=()=>{const r=document.documentElement,d=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=d?'light':'dark'};
@@ -256,8 +442,8 @@ function stat(n,l){return `<div class="card stat"><b>${n}</b><span>${l}</span></
 function statsHTML(){const r=R(),m=Math.round(r.reduce((a,x)=>a+x.dur,0)/60);
  return stat(r.length?r[r.length-1].wpm:0,'Current WPM')+stat(Math.max(0,...r.map(x=>x.wpm)),'Best WPM')+stat(Math.round(avg(r.map(x=>x.acc)))+'%','Average accuracy')+stat(m+' min','Practice time')+stat(r.reduce((a,x)=>a+x.words,0),'Words typed')+stat(done(),'Topics completed')}
 // ---- dashboard ----
-function dailyTopic(){const d=new Date();return ALL[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%ALL.length]}
-function renderHome(){$('#stats').innerHTML=statsHTML();
+function dailyTopic(){const d=new Date(),P=ALL.filter(a=>a.x);return P[(d.getFullYear()*372+d.getMonth()*31+d.getDate())%P.length]}
+function renderHome(){$('#stats').innerHTML=statsHTML();paintStreak();
  const best={};R().forEach(r=>{if(r.key[0]!=='#'&&(!best[r.key]||r.acc>best[r.key].acc))best[r.key]=r});
  const rec=[...new Set(R().filter(r=>r.key[0]!=='#').map(r=>r.key).reverse())].slice(0,3);
  $('#cont').innerHTML=rec.length?rec.map(k=>{const t=ALL.find(a=>a.key===k),b=best[k];if(!t)return '';return `<div class="card"><b>${esc(t.sub)}</b><div class="sub">${esc(t.t)}</div><div class="bar" style="margin:10px 0"><i style="width:${Math.min(100,b.acc)}%"></i></div><button class="btn" data-k="${esc(k)}">Practice again</button></div>`}).join(''):'<div class="card sub">Nothing yet. Pick a subject or take the daily challenge to begin.</div>';
@@ -267,16 +453,13 @@ function renderHome(){$('#stats').innerHTML=statsHTML();
 $('#goDaily').onclick=()=>{const t=dailyTopic();setup(t,{daily:1})};
 // ---- library ----
 for(let i=1;i<=8;i++)$('#fs').insertAdjacentHTML('beforeend',`<option>${i}</option>`);
-function renderLib(){const b=$('#fb').value,s=$('#fs').value,q=$('#q').value.toLowerCase().trim();
- const subs=D.filter(([br,sm,sub,ts])=>(!b||br===b)&&(!s||sm==s)&&(!q||(sub+ts.map(t=>t[0]).join(' ')+br).toLowerCase().includes(q)));
- $('#subs').innerHTML=subs.length?subs.map(([br,sm,sub,ts])=>`<div class="card"><b>${esc(sub)}</b><div class="sub">${br}, year ${Math.ceil(sm/2)}, semester ${sm}</div><div style="margin-top:8px">${ts.map(t=>`<button class="chip" data-k="${esc(sub+'|'+t[0])}">${esc(t[0])}</button>`).join('')}</div></div>`).join(''):'<div class="card sub">No subject matches. Clear a filter or try another word.</div>';
- $$('#subs [data-k]').forEach(c=>c.onclick=()=>setup(ALL.find(a=>a.key===c.dataset.k)))}
+
 ['#fb','#fs'].forEach(i=>$(i).onchange=renderLib);$('#q').oninput=renderLib;
 // ---- typing engine ----
 let cur=null,T=null,lastCfg=null;
 function setup(topic,opt={}){cur={topic,opt};stop();go('type');
  $('#setup').style.display='block';$('#test').style.display='none';$('#result').style.display='none';
- $('#sTitle').textContent=topic.t;$('#sSub').textContent=topic.sub+(topic.b?', '+topic.b:'')+(topic.s?' semester '+topic.s:'')}
+ $('#sTitle').textContent=topic.t;$('#sSub').textContent=topic.sub+(topic.b?', '+topic.b.split(',').slice(0,3).join(', '):'')+(topic.s?' semester '+topic.s:'')}
 function build(topic,dif,n){let sents=[...topic.x],out=[],c=0,i=0;
  if(dif==='hard'&&topic.k)sents.push('Key terms: '+topic.k+'.');
  while(c<n){let s=sents[i++%sents.length];if(dif==='easy')s=s.toLowerCase().replace(/[.,:']/g,'');out.push(s);c+=s.split(' ').length;if(i>400)break}
@@ -306,15 +489,14 @@ function finish(){if(!T||T.fin)return;const c=calc();T.fin=true;clearInterval(T.
  const words=T.text.split(' '),typed=c.v.split(' ');const bad=[];
  words.forEach((w,i)=>{if(i<typed.length-1||(i===typed.length-1&&c.v.length>=T.text.length-0&&false)){if(typed[i]!==w)bad.push(w)}else if(i===typed.length-1&&typed[i]&&typed[i]!==w&&typed[i].length>=w.length)bad.push(w)});
  const bw=[...new Set(bad.map(w=>w.replace(/[^\w'-]/g,'')).filter(w=>w.length>2))];
- const nw=Math.round(c.ok/5),res={t:Date.now(),wpm:c.wpm,acc:c.acc,err:T.err,chars:c.ok,dur:Math.max(1,Math.round(c.el)),words:nw,key:T.key,daily:T.extra.daily?1:0};
- if(c.v.length){S.results.push(res);save()}
+ const nw=Math.round(c.ok/5),res={t:Date.now(),wpm:c.wpm,acc:c.acc,err:T.err,chars:c.ok,dur:Math.max(1,Math.round(c.el)),words:nw,key:T.key,daily:T.extra.daily?1:0,label:T.label,text:T.text.slice(0,3000)};
+ if(c.v.length){S.results.push(res);S.results.forEach((x,i)=>{if(i<S.results.length-60)delete x.text});save();paintHead()}
  const ok=T.extra.daily&&c.wpm>=40&&c.acc>=95;
  $('#test').style.display='none';$('#result').style.display='block';
  $('#rStats').innerHTML=stat(c.wpm,'WPM')+stat(c.acc+'%','Accuracy')+stat(c.ok,'Correct characters')+stat(T.err,'Errors')+stat(res.dur>=60?Math.floor(res.dur/60)+' min '+res.dur%60+' s':res.dur+' s','Time');
  $('#rWords').innerHTML=(T.extra.daily?`<p><b>${ok?'Daily challenge completed.':'Daily challenge target: 40 WPM and 95% accuracy. Try again.'}</b></p>`:'')+(bw.length?'Words to practice: '+bw.map(w=>`<span class="bad">${esc(w)}</span>`).join(', '):'No missed words. Clean run.');
  T.bw=bw;$('#mist').style.display=bw.length?'':'none';$('#next').style.display=cur&&cur.topic.key?'':'none'}
-$('#startBtn').onclick=()=>{const t=cur.topic,d=$('#dif').value,n=+$('#len').value,s=+$('#tim').value;
- begin(t.passage||build(t,d,n),s,t.sub+': '+t.t,'Difficulty '+d+', '+n+' words',t.key,cur.opt)};
+
 $('#again').onclick=()=>{const c=lastCfg;begin(c.text,c.secs,c.label,c.meta,c.key,c.extra)};
 $('#mist').onclick=()=>{const w=T.bw;if(!w.length)return;let out=[];for(let r=0;r<3;r++)out.push(...w.slice().sort(()=>Math.random()-.5));
  begin(out.join(' '),60,'Practice my mistakes','Your missed words, repeated','#mistakes')};
@@ -406,25 +588,119 @@ $('#reset').onclick=()=>{if(confirm('Delete all your results and the saved PDF?'
 const gst=()=>{$('#gst').textContent=UKEY()?'A key is saved in this browser.':'No key saved.'};gst();
 $('#gsave').onclick=()=>{const k=$('#gk').value.trim();if(k.length<20){$('#gst').textContent='That does not look like a full key. Paste it again.';return}try{localStorage.setItem('etm_gkey',k)}catch(e){}$('#gk').value='';gst()};
 $('#gclr').onclick=()=>{try{localStorage.removeItem('etm_gkey')}catch(e){}gst()};
-// ---- login (Firebase Authentication). Paste your own config below. ----
+// ---- streak, history, profile ----
+const practicedToday=()=>R().some(r=>day(r.t)===new Date().toDateString());
+function bestStreak(){const ds=[...new Set(R().map(r=>new Date(r.t).setHours(0,0,0,0)))].sort((a,b)=>a-b);let b=0,c=0,p=-1;ds.forEach(d=>{c=(p>0&&Math.round((d-p)/864e5)===1)?c+1:1;b=Math.max(b,c);p=d});return b}
+function weekDots(){const c=new Set(R().map(r=>day(r.t))),t=new Date(),m=new Date(t);m.setDate(t.getDate()-((t.getDay()+6)%7));
+ return 'MTWTFSS'.split('').map((l,i)=>{const d=new Date(m);d.setDate(m.getDate()+i);const on=c.has(d.toDateString()),now=d.toDateString()===t.toDateString();return `<span class="${on?'on':''} ${now?'now':''}"><i></i>${l}</span>`}).join('')}
+const FLAME='<svg viewBox="0 0 24 24" width="46" height="46" aria-hidden="true"><path d="M12 2c1 4-3 5-3 9a3 3 0 0 0 6 1c0-1-1-2-1-3 3 2 5 4 5 7a7 7 0 0 1-14 0c0-6 7-8 7-14z" fill="currentColor"/></svg>';
+function paintStreak(){const sk=streak(),td=practicedToday();
+ $('#scard').innerHTML=`<div class="lab">Daily streak</div><div class="sk"><span class="flame">${FLAME}</span><div><b>${sk}</b><span class="sub">day${sk===1?'':'s'} in a row</span></div></div><div class="wk">${weekDots()}</div><p class="sub" style="margin:0">${td?'Streak safe for today. Come back tomorrow to extend it.':sk?'Finish one typing test today to keep your '+sk+'-day streak alive.':'Finish one typing test today to start your streak.'} Best so far: ${bestStreak()} day${bestStreak()===1?'':'s'}.</p>`}
+function dispName(){return (S.profile&&S.profile.name)||(ME&&ME.name)||(ME&&ME.email.split('@')[0])||'Guest'}
+function paintHead(){$('#sN').textContent=streak();$('#sChip').classList.toggle('on',practicedToday());
+ $('#guest').style.display=ME?'none':'';$('#user').style.display=ME?'':'none';
+ if(ME){$('#avb').textContent=dispName().charAt(0).toUpperCase();$('#mName').textContent=dispName()}}
+function renderHist(){const r=R().map((x,i)=>[x,i]).reverse();
+ $('#hlist').innerHTML=r.length?r.map(([x,i])=>`<details class="hitem"><summary><span class="hd">${new Date(x.t).toLocaleDateString(undefined,{day:'numeric',month:'short'})}</span><b>${esc(x.label||'Typing test')}</b><span class="pill">${x.wpm} WPM</span><span class="pill">${x.acc}%</span></summary><div class="hp">${x.text?esc(x.text):'<i>The passage was not saved for older tests.</i>'}</div>${x.text?`<button class="btn sm" data-i="${i}">Type this again</button>`:''}</details>`).join(''):'<div class="card sub">Nothing here yet. Finish a typing test and the passage will appear here for revision.</div>';
+ $$('#hlist [data-i]').forEach(b=>b.onclick=()=>{const x=R()[+b.dataset.i];go('type');begin(x.text,60,x.label||'Typing test','Repeat of an earlier passage',x.key||'#repeat')})}
+function renderProf(){const r=R(),p=S.profile||{},n=dispName();
+ $('#pAv').textContent=n.charAt(0).toUpperCase();$('#pName').textContent=n;$('#pMail').textContent=ME?ME.email+(ME.since?' · member since '+new Date(ME.since).toLocaleDateString(undefined,{month:'short',year:'numeric'}):''):'Guest';
+ $('#pGuest').style.display=ME?'none':'';
+ $('#pfStats').innerHTML=stat(streak(),'Current streak')+stat(bestStreak(),'Best streak')+stat(Math.max(0,...r.map(x=>x.wpm)),'Best WPM')+stat(Math.round(avg(r.map(x=>x.acc)))+'%','Avg accuracy')+stat(r.length,'Tests')+stat(r.reduce((a,x)=>a+x.words,0),'Words typed');
+ const c={};r.forEach(x=>{const k=day(x.t);c[k]=(c[k]||0)+1});let h='';
+ for(let i=27;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const k=c[d.toDateString()]||0;h+=`<i class="h${k>=4?3:k>=2?2:k?1:0}" title="${d.toDateString()}: ${k} test${k===1?'':'s'}"></i>`}
+ $('#heat').innerHTML=h;$('#eName').value=p.name||(ME?ME.name:'')||'';$('#eBr').value=p.branch||'';$('#eSem').value=p.sem||'';$('#eMsg').textContent=''}
+$('#eSave').onclick=()=>{S.profile={name:$('#eName').value.trim().slice(0,40),branch:$('#eBr').value,sem:$('#eSem').value};save();
+ if(ME&&!FB){const A=ja('etm_accts','{}');if(A[ME.email]){A[ME.email].name=S.profile.name||A[ME.email].name;put('etm_accts',JSON.stringify(A))}}
+ paintHead();renderProf();$('#eMsg').textContent='Saved.'};
+function units(ts){const n=Math.max(1,Math.ceil(ts.length/4)),z=Math.ceil(ts.length/n),o=[];for(let i=0;i<ts.length;i+=z)o.push(ts.slice(i,i+z));return o}
+const doneKeys=()=>new Set(R().filter(r=>r.acc>=90&&r.key).map(r=>r.key));
+function renderSubj(){const g=SJ;if(!g){go('lib',true);return}const ts=ALL.filter(a=>a.sub===g.sub&&a.s==g.s),U=units(ts),dn=doneKeys();
+ $('#v-subj').innerHTML=`<div class="lab">Subject</div><h2 style="margin-top:0">${esc(g.sub)}</h2><p class="sub">Year ${Math.ceil(g.s/2)}, semester ${g.s}. Choose a unit to see its topics.</p><div class="sg" style="margin-top:14px">`+
+ U.map((u,i)=>{const d=u.filter(a=>dn.has(a.key)).length;return `<div class="card"><div class="lab">Unit ${i+1}</div><b>${esc(u[0].t)}${u.length>1?' and '+(u.length-1)+' more':''}</b><div class="sub" style="margin:6px 0">${esc(u.map(a=>a.t).join(', '))}</div><div class="sub" style="margin-bottom:10px">${u.length} topic${u.length>1?'s':''} · ${d} done</div><button class="btn sm p" data-u="${i}">Open unit</button></div>`}).join('')+'</div>';
+ $$('#v-subj [data-u]').forEach(b=>b.onclick=()=>{CHP={g,u:+b.dataset.u,ts:U[+b.dataset.u]};go('chap')})}
+function renderChap(){const c=CHP;if(!c){go('lib',true);return}const dn=doneKeys();
+ $('#v-chap').innerHTML=`<div class="lab">${esc(c.g.sub)}</div><h2 style="margin-top:0">Unit ${c.u+1}</h2><p class="sub">Pick a topic, read it as you type, and build speed.</p><div style="margin-top:14px">`+
+ c.ts.map((a,i)=>`<div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px"><div><div class="lab">Topic ${i+1}</div><b>${esc(a.t)}</b><div class="sub">${dn.has(a.key)?'Completed':'Not completed yet'}</div></div><button class="btn p" data-k="${esc(a.key)}">Practice</button></div>`).join('')+'</div>';
+ $$('#v-chap [data-k]').forEach(b=>b.onclick=()=>setup(ALL.find(a=>a.key===b.dataset.k)))}
+$('#back').onclick=back;
+(function(){const el=$('#dtxt'),L=ALL.filter(a=>a.x).map(a=>a.x[0]),rm=matchMedia('(prefers-reduced-motion:reduce)').matches;let i=0,k=0;
+ (function loop(){const t=L[i%L.length];if(rm){el.textContent=t;return}
+  if(k<=t.length){el.innerHTML=esc(t.slice(0,k))+'<span class="cr"></span>';k++;setTimeout(loop,40+Math.random()*50)}
+  else setTimeout(()=>{i=Math.floor(Math.random()*L.length);k=0;loop()},1800)})()})();
+const BR=['CSE','IT','AI and ML','Data Science','ECE','EEE','ME','Civil','Chemical','Biotech','Aerospace'];
+$('#fb').innerHTML='<option value="">All branches</option>'+['B.Tech Common',...BR].map(b=>`<option>${b}</option>`).join('');
+$('#eBr').innerHTML='<option value="">Not set</option>'+BR.map(b=>`<option>${b}</option>`).join('');
+function renderLib(){const b=$('#fb').value,s=$('#fs').value,q=$('#q').value.toLowerCase().trim(),G={};
+ ALL.forEach(a=>{if(s&&a.s!=s)return;const bl=a.b.split(',');if(b&&!bl.includes(b)&&a.b!=='B.Tech Common')return;if(q&&!(a.sub+' '+a.t+' '+a.b).toLowerCase().includes(q))return;
+  const g=G[a.s+'|'+a.sub]=G[a.s+'|'+a.sub]||{sub:a.sub,s:a.s,b:new Set(),ts:[]};g.ts.push(a);bl.forEach(x=>g.b.add(x))});
+ LG=G;const L=Object.values(G).sort((x,y)=>x.s-y.s||x.sub.localeCompare(y.sub));
+ $('#subs').innerHTML=L.length?L.map(g=>{const bl=[...g.b];return `<div class="card"><b>${esc(g.sub)}</b><div class="sub">${esc(bl.length>3?bl.slice(0,3).join(', ')+' +'+(bl.length-3):bl.join(', '))} · year ${Math.ceil(g.s/2)}, sem ${g.s}</div><div class="sub" style="margin:6px 0 10px">${g.ts.length} topics · ${units(g.ts).length} unit${units(g.ts).length>1?'s':''}</div><button class="btn sm p" data-sj="${esc(g.s+'|'+g.sub)}">Open chapters</button></div>`}).join(''):'<div class="card sub">No subject matches. Clear a filter or try another word.</div>';
+ $$('#subs [data-sj]').forEach(c=>c.onclick=()=>{SJ=LG[c.dataset.sj];go('subj')})}
+async function ai(prompt){const s=await getSample();
+ if(s){try{return (await s(prompt,{cache:false})).text}catch(e){}}
+ const body=JSON.stringify({contents:[{parts:[{text:prompt}]}]}),H={'Content-Type':'application/json'};
+ const call=async srv=>{let r;try{r=await fetch(srv?OCR_API:'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent',{method:'POST',headers:srv?H:{...H,'x-goog-api-key':UKEY()},body})}catch(e){throw{code:'net'}}
+  if(!r.ok)throw{code:'gem'+r.status};const j=await r.json();return ((j.candidates||[])[0]?.content?.parts||[]).map(p=>p.text||'').join(' ')};
+ if(useWorker()){try{return await call(true)}catch(e){if(!['gem404','gem405','gem500','net'].includes(e.code)||!UKEY())throw(e.code==='gem404'||e.code==='gem405')?{code:'none'}:e}}
+ if(UKEY())return call(false);throw{code:'none'}}
+async function ensure(t){const P='Write a clear, accurate explanation of "'+t.t+'" from the engineering subject "'+t.sub+'" for a B.Tech student. Use exactly 6 short plain sentences, one per line, no numbering, no markdown, no lists, plain ASCII only. Then on a final line write TERMS: followed by 5 key terms separated by commas.';
+ let L=(await ai(P)).replace(/[^\x20-\x7E\n]/g,'').split('\n').map(x=>x.replace(/^[\s*#\-]+/,'').trim()).filter(Boolean),k='';
+ const ti=L.findIndex(x=>/^TERMS:/i.test(x));if(ti>=0){k=L[ti].replace(/^TERMS:/i,'').trim();L=L.slice(0,ti)}
+ L=L.filter(x=>x.length>20).slice(0,8);if(L.length<3)throw{code:'bad'};t.x=L;t.k=k;
+ try{const g=JSON.parse(localStorage.getItem('etm_gen')||'{}');g[t.key]={x:L,k};localStorage.setItem('etm_gen',JSON.stringify(g))}catch(e){}}
+$('#startBtn').onclick=async()=>{const t=cur.topic,d=$('#dif').value,n=+$('#len').value,s=+$('#tim').value,m=$('#gmsg'),bt=$('#startBtn');
+ if(!t.x&&!t.passage){m.textContent='Writing a passage on '+t.t+'...';bt.disabled=true;
+  try{await ensure(t);m.textContent=''}catch(e){m.textContent=e.code==='none'?'This topic needs the AI passage writer. Add your free Gemini key in My notes, or choose a topic that already has a passage.':'Could not write the passage. Check your connection and try again.';bt.disabled=false;return}bt.disabled=false}
+ begin(t.passage||build(t,d,n),s,t.sub+': '+t.t,'Difficulty '+d+', '+n+' words',t.key,cur.opt)};
+let CM=new Date();CM.setDate(1);
+function drawCal(){const c=new Set(R().map(r=>day(r.t))),y=CM.getFullYear(),m=CM.getMonth(),first=(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate(),td=new Date().toDateString();
+ let h=`<div class="row" style="justify-content:space-between;margin:6px 0 8px"><button class="btn sm" id="cp" aria-label="Previous month">&lsaquo;</button><b>${CM.toLocaleDateString(undefined,{month:'long',year:'numeric'})}</b><button class="btn sm" id="cn" aria-label="Next month">&rsaquo;</button></div><div class="cg">${'MTWTFSS'.split('').map(l=>`<em>${l}</em>`).join('')}`;
+ for(let i=0;i<first;i++)h+='<span></span>';
+ for(let d=1;d<=n;d++){const k=new Date(y,m,d).toDateString();h+=`<span class="${c.has(k)?'on':''} ${k===td?'now':''}">${d}</span>`}
+ $('#scal').innerHTML=`<div class="lab">Daily streak</div><div class="sk"><span class="flame">${FLAME}</span><div><b style="font-size:40px">${streak()}</b><span class="sub">day streak, best ${bestStreak()}</span></div></div>${h}</div>`;
+ $('#cp').onclick=e=>{e.stopPropagation();CM.setMonth(CM.getMonth()-1);drawCal()};$('#cn').onclick=e=>{e.stopPropagation();CM.setMonth(CM.getMonth()+1);drawCal()}}
+$('#sChip').onclick=e=>{e.stopPropagation();$('#menu').classList.remove('open');CM=new Date();CM.setDate(1);drawCal();$('#scal').classList.toggle('open')};
+document.addEventListener('click',e=>{if(!e.target.closest('#scal'))$('#scal').classList.remove('open')});
+(function(){const b=$('#brand');if(matchMedia('(prefers-reduced-motion:reduce)').matches){b.classList.add('open');return}
+ let o=false;(function t(){o=!o;b.classList.toggle('open',o);setTimeout(t,o?4200:2600)})();b.classList.remove('open');setTimeout(()=>{},0)})();
+// ---- accounts: Firebase if configured, otherwise accounts saved in this browser ----
 const FIREBASE_CONFIG={apiKey:"PASTE_API_KEY",authDomain:"PASTE_AUTH_DOMAIN",projectId:"PASTE_PROJECT_ID",appId:"PASTE_APP_ID"};
+const FB=!!(window.firebase&&!FIREBASE_CONFIG.apiKey.startsWith('PASTE_'));
+let ME=null,AM='login',au=null;
+const put=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
+const ja=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||d)}catch(e){return JSON.parse(d)}};
 function loadUser(){S={results:[]};PDF=null;try{S=JSON.parse(localStorage.getItem('etm'+UK)||'{"results":[]}')}catch(e){}try{PDF=JSON.parse(localStorage.getItem('etmpdf'+UK)||'null')}catch(e){}}
-(function(){
- if(!(window.firebase&&FIREBASE_CONFIG.apiKey&&FIREBASE_CONFIG.apiKey!=='PASTE_API_KEY'))return; // no config: app opens without login
- firebase.initializeApp(FIREBASE_CONFIG);const au=firebase.auth(),box=$('#auth'),msg=$('#amsg');box.style.display='flex';
- const E={'auth/invalid-credential':'Wrong email or password.','auth/wrong-password':'Wrong email or password.','auth/user-not-found':'No account with this email. Choose Create account.','auth/email-already-in-use':'This email already has an account. Choose Log in.','auth/weak-password':'Use a password with at least 6 characters.','auth/invalid-email':'Enter a valid email address.','auth/popup-closed-by-user':'Google sign-in was closed. Try again.','auth/too-many-requests':'Too many tries. Wait a few minutes.','auth/network-request-failed':'No internet connection.','auth/unauthorized-domain':'This website address is not allowed yet in Firebase settings.'};
- const fail=e=>{msg.style.color='var(--bad)';msg.textContent=E[e.code]||'Something went wrong. Try again.'};
- const val=()=>({e:$('#aem').value.trim(),p:$('#apw').value});
- $('#alog').onclick=()=>{const v=val();if(!v.e||!v.p){msg.textContent='Enter your email and password.';return}au.signInWithEmailAndPassword(v.e,v.p).catch(fail)};
- $('#asign').onclick=()=>{const v=val();if(!v.e||!v.p){msg.textContent='Enter an email and a password to create your account.';return}au.createUserWithEmailAndPassword(v.e,v.p).catch(fail)};
- $('#agoo').onclick=()=>au.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(fail);
- $('#afor').onclick=()=>{const v=val();if(!v.e){msg.style.color='var(--bad)';msg.textContent='Type your email above first.';return}au.sendPasswordResetEmail(v.e).then(()=>{msg.style.color='var(--ok)';msg.textContent='Password reset email sent. Check your inbox.'}).catch(fail)};
- $('#apw').addEventListener('keydown',e=>{if(e.key==='Enter')$('#alog').click()});
- $('#logout').onclick=()=>au.signOut();
- au.onAuthStateChanged(u=>{stop();
-  if(u){UK='_'+u.uid;loadUser();box.style.display='none';$('#apw').value='';msg.textContent='';$('#who').textContent=u.email||u.displayName||'';$('#who').style.display='';$('#logout').style.display='';$('#pinfo').innerHTML='';showPDF();go('home')}
-  else{UK='';S={results:[]};PDF=null;$('#who').style.display=$('#logout').style.display='none';box.style.display='flex'}});
-})();
+async function hsh(p){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('etm1:'+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return 'p:'+btoa(unescape(encodeURIComponent(p)))}}
+function setMe(u){stop();ME=u;UK=u?'_'+u.id:'';loadUser();$('#pinfo').innerHTML='';showPDF();HIST=[];paintHead();go('home',true)}
+function openAuth(m){AM=m;const s=m==='signup';$('#atag').textContent=s?'Join free':'Welcome back';$('#atitle').textContent=s?'Create your account':'Log in';
+ $('#anl').style.display=s?'':'none';$('#aok').textContent=s?'Sign up':'Log in';$('#aswt').textContent=s?'Already have an account?':'New here?';$('#asw').textContent=s?'Log in':'Create an account';
+ $('#agoo').style.display=FB?'':'none';$('#afor').style.display=FB&&!s?'':'none';$('#amsg').textContent='';$('#auth').style.display='flex';setTimeout(()=>$(s?'#anm':'#aem').focus(),30)}
+const closeAuth=()=>{$('#auth').style.display='none';$('#apw').value=''};
+const FE={'auth/invalid-credential':'Wrong email or password.','auth/user-not-found':'No account with this email.','auth/email-already-in-use':'This email already has an account. Log in instead.','auth/weak-password':'Use a password with at least 6 characters.','auth/popup-closed-by-user':'Google sign-in was closed.','auth/too-many-requests':'Too many tries. Wait a few minutes.','auth/network-request-failed':'No internet connection.','auth/unauthorized-domain':'This website address is not allowed yet in Firebase settings.'};
+async function submit(){const n=$('#anm').value.trim(),e=$('#aem').value.trim().toLowerCase(),p=$('#apw').value,m=$('#amsg');m.style.color='var(--bad)';
+ if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent='Enter a valid email address.';return}
+ if(p.length<6){m.textContent='Use a password with at least 6 characters.';return}
+ if(AM==='signup'&&!n){m.textContent='Enter your name.';return}
+ if(FB){try{if(AM==='signup'){const c=await au.createUserWithEmailAndPassword(e,p);await c.user.updateProfile({displayName:n})}else await au.signInWithEmailAndPassword(e,p);closeAuth()}catch(x){m.textContent=FE[x.code]||'Something went wrong. Try again.'}return}
+ const A=ja('etm_accts','{}'),h=await hsh(p);
+ if(AM==='signup'){if(A[e]){m.textContent='This email already has an account. Log in instead.';return}A[e]={id:'l'+Date.now().toString(36),name:n,email:e,h,since:Date.now()};put('etm_accts',JSON.stringify(A))}
+ else if(!A[e]||A[e].h!==h){m.textContent='Wrong email or password.';return}
+ put('etm_session',e);closeAuth();setMe({id:A[e].id,name:A[e].name,email:e,since:A[e].since})}
+$('#bLog').onclick=()=>openAuth('login');$('#bSign').onclick=()=>openAuth('signup');$('#aclose').onclick=closeAuth;
+$('#auth').addEventListener('mousedown',e=>{if(e.target.id==='auth')closeAuth()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth()});
+$('#asw').onclick=()=>openAuth(AM==='login'?'signup':'login');$('#aok').onclick=submit;
+['#aem','#apw','#anm'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')submit()}));
+$('#avb').onclick=e=>{e.stopPropagation();const o=$('#menu').classList.toggle('open');$('#avb').setAttribute('aria-expanded',o)};
+document.addEventListener('click',e=>{if(!e.target.closest('#user'))$('#menu').classList.remove('open')});
+$('#mOut').onclick=()=>{if(FB)au.signOut();else{try{localStorage.removeItem('etm_session')}catch(e){}setMe(null)}};
+if(FB){firebase.initializeApp(FIREBASE_CONFIG);au=firebase.auth();
+ $('#agoo').onclick=()=>au.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(closeAuth).catch(x=>{$('#amsg').textContent=FE[x.code]||'Something went wrong.'});
+ $('#afor').onclick=()=>{const e=$('#aem').value.trim();if(!e){$('#amsg').textContent='Type your email above first.';return}au.sendPasswordResetEmail(e).then(()=>{$('#amsg').style.color='var(--ok)';$('#amsg').textContent='Password reset email sent.'}).catch(x=>{$('#amsg').textContent=FE[x.code]||'Something went wrong.'})};
+ au.onAuthStateChanged(u=>setMe(u?{id:u.uid,name:u.displayName||'',email:u.email||'',since:u.metadata&&Date.parse(u.metadata.creationTime)}:null))}
+else{const se=localStorage.getItem('etm_session'),A=ja('etm_accts','{}');if(se&&A[se])setMe({id:A[se].id,name:A[se].name,email:se,since:A[se].since})}
+paintHead();
 renderHome();
 </script>
 </body>
