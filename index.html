@@ -21,6 +21,8 @@ header{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px
 .brand .w{display:inline-flex;align-items:center}
 .brand b{display:inline-grid;place-items:center;width:30px;height:32px;border:2px solid var(--bd);border-bottom-width:5px;border-radius:7px;background:var(--acc);color:#15171c;font:800 15px var(--mono);margin-right:1px}
 .brand i{font-style:normal;display:inline-block;overflow:hidden;max-width:0;vertical-align:bottom;transition:max-width calc(var(--n)*.06s) steps(var(--n),end)}
+@keyframes press{40%{transform:translateY(3px);border-bottom-width:2px}}
+.brand.open b{animation:press .28s ease-out}.brand.open .w:nth-child(2) b{animation-delay:.5s}.brand.open .w:nth-child(3) b{animation-delay:1s}
 .brand.open i{max-width:calc(var(--n)*1ch)}.brand.open .w:nth-child(2) i{transition-delay:.55s}.brand.open .w:nth-child(3) i{transition-delay:1.05s}
 nav{display:flex;gap:2px;overflow-x:auto;max-width:100%}
 nav button{border:0;background:transparent;padding:8px 13px;border-radius:7px;cursor:pointer;white-space:nowrap;font-size:14px;font-weight:700;color:var(--mute)}
@@ -78,10 +80,11 @@ svg text{fill:var(--mute);font-size:11px}details.card summary{cursor:pointer;fon
 #amsg{min-height:1.5em;margin:10px 0 6px;font-size:14px;font-weight:600}.x{position:absolute;right:12px;top:10px;border:0;background:transparent;font-size:28px;cursor:pointer;line-height:1;color:var(--mute)}
 .lnk{border:0;background:transparent;padding:0;color:var(--ink);text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:3px;text-underline-offset:3px;cursor:pointer;font-weight:800}
 @media (min-width:900px){.brand{min-width:300px}}
-@media (max-width:899px){.brand i{display:none}}
+@media (max-width:899px){.brand{flex:1 0 100%;font-size:14px}}@media (max-width:420px){.brand{font-size:12.5px}.brand b{width:26px;height:28px;font-size:13px}}
 @media (max-width:820px){.hero{grid-template-columns:1fr;gap:26px}.demo{transform:none}nav{order:3;width:100%}}
 @media (max-width:600px){#box{font-size:18px}main{padding:18px 14px 60px}header{padding:10px 14px}}
-@media (prefers-reduced-motion:reduce){.cr{animation:none}.btn,.sg .card{transition:none}.brand i{transition:none}}
+@media (prefers-reduced-motion:reduce){.cr{animation:none}.btn,.sg .card{transition:none}
+.brand i,.brand b{transition:none;animation:none!important}}
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
@@ -91,12 +94,13 @@ svg text{fill:var(--mute);font-size:11px}details.card summary{cursor:pointer;fon
 <div class="lab" id="atag">Welcome back</div>
 <h2 id="atitle" style="margin:0">Log in</h2>
 <label id="anl">Your name<input id="anm" autocomplete="name"></label>
-<label>Email<input type="email" id="aem" autocomplete="email"></label>
-<label>Password<input type="password" id="apw" autocomplete="current-password"></label>
+<label id="ael">Email<input type="email" id="aem" autocomplete="email"></label>
+<label id="acl" style="display:none">6-digit code from your email<input id="acd" inputmode="numeric" maxlength="6" autocomplete="one-time-code"></label>
+<label id="apl"><span id="aplt">Password</span><input type="password" id="apw" autocomplete="current-password"></label>
 <p id="amsg" role="alert"></p>
 <button class="btn p" id="aok" style="width:100%">Log in</button>
 <button class="btn" id="agoo" style="width:100%;display:none;margin-top:8px">Continue with Google</button>
-<p class="sub" style="margin:14px 0 0"><span id="aswt">New here?</span> <button class="lnk" id="asw">Create an account</button> <button class="lnk" id="afor" style="display:none;margin-left:10px">Forgot password?</button></p>
+<p class="sub" style="margin:14px 0 0"><span id="aswt">New here?</span> <button class="lnk" id="asw">Create an account</button> <button class="lnk" id="afor" style="display:none;margin-left:10px">Forgot password?</button> <button class="lnk" id="ares" style="display:none;margin-left:10px">Resend code</button></p>
 </div></div>
 <header>
   <button class="brand" id="brand" data-go="home" aria-label="Engineering Typing Master"><span class="w"><b>E</b><i style="--n:10">ngineering</i></span><span class="w"><b>T</b><i style="--n:5">yping</i></span><span class="w"><b>M</b><i style="--n:5">aster</i></span></button>
@@ -464,7 +468,8 @@ function build(topic,dif,n){let sents=[...topic.x],out=[],c=0,i=0;
  if(dif==='hard'&&topic.k)sents.push('Key terms: '+topic.k+'.');
  while(c<n){let s=sents[i++%sents.length];if(dif==='easy')s=s.toLowerCase().replace(/[.,:']/g,'');out.push(s);c+=s.split(' ').length;if(i>400)break}
  const w=out.join(' ').split(' ').slice(0,n);let t=w.join(' ');if(dif!=='easy'&&!/[.]$/.test(t))t=t.replace(/[,:;]$/,'')+'.';return t}
-function begin(text,secs,label,meta,key,extra={}){lastCfg={text,secs,label,meta,key,extra};
+function begin(text,secs,label,meta,key,extra={}){if(!ME){PENDING=()=>{go('type');begin(text,secs,label,meta,key,extra)};showGate();return}
+lastCfg={text,secs,label,meta,key,extra};
  $('#setup').style.display='none';$('#result').style.display='none';$('#test').style.display='block';
  $('#tSub').textContent=label;$('#tMeta').textContent=meta;
  const box=$('#box');box.innerHTML=[...text].map(c=>`<span class="u">${esc(c)}</span>`).join('');
@@ -649,7 +654,8 @@ async function ensure(t){const P='Write a clear, accurate explanation of "'+t.t+
  const ti=L.findIndex(x=>/^TERMS:/i.test(x));if(ti>=0){k=L[ti].replace(/^TERMS:/i,'').trim();L=L.slice(0,ti)}
  L=L.filter(x=>x.length>20).slice(0,8);if(L.length<3)throw{code:'bad'};t.x=L;t.k=k;
  try{const g=JSON.parse(localStorage.getItem('etm_gen')||'{}');g[t.key]={x:L,k};localStorage.setItem('etm_gen',JSON.stringify(g))}catch(e){}}
-$('#startBtn').onclick=async()=>{const t=cur.topic,d=$('#dif').value,n=+$('#len').value,s=+$('#tim').value,m=$('#gmsg'),bt=$('#startBtn');
+$('#startBtn').onclick=async()=>{if(!ME){PENDING=()=>{go('type');$('#startBtn').click()};showGate();return}
+ const t=cur.topic,d=$('#dif').value,n=+$('#len').value,s=+$('#tim').value,m=$('#gmsg'),bt=$('#startBtn');
  if(!t.x&&!t.passage){m.textContent='Writing a passage on '+t.t+'...';bt.disabled=true;
   try{await ensure(t);m.textContent=''}catch(e){m.textContent=e.code==='none'?'This topic needs the AI passage writer. Add your free Gemini key in My notes, or choose a topic that already has a passage.':'Could not write the passage. Check your connection and try again.';bt.disabled=false;return}bt.disabled=false}
  begin(t.passage||build(t,d,n),s,t.sub+': '+t.t,'Difficulty '+d+', '+n+' words',t.key,cur.opt)};
@@ -663,7 +669,7 @@ function drawCal(){const c=new Set(R().map(r=>day(r.t))),y=CM.getFullYear(),m=CM
 $('#sChip').onclick=e=>{e.stopPropagation();$('#menu').classList.remove('open');CM=new Date();CM.setDate(1);drawCal();$('#scal').classList.toggle('open')};
 document.addEventListener('click',e=>{if(!e.target.closest('#scal'))$('#scal').classList.remove('open')});
 (function(){const b=$('#brand');if(matchMedia('(prefers-reduced-motion:reduce)').matches){b.classList.add('open');return}
- let o=false;(function t(){o=!o;b.classList.toggle('open',o);setTimeout(t,o?4200:2600)})();b.classList.remove('open');setTimeout(()=>{},0)})();
+ let o=false;(function t(){o=!o;b.classList.toggle('open',o);setTimeout(t,o?4200:2600)});setTimeout(()=>{o=true;b.classList.add('open');setTimeout(function t(){o=!o;b.classList.toggle('open',o);setTimeout(t,o?4200:2600)},4200)},1200)})();
 // ---- accounts: Firebase if configured, otherwise accounts saved in this browser ----
 const FIREBASE_CONFIG={apiKey:"PASTE_API_KEY",authDomain:"PASTE_AUTH_DOMAIN",projectId:"PASTE_PROJECT_ID",appId:"PASTE_APP_ID"};
 const FB=!!(window.firebase&&!FIREBASE_CONFIG.apiKey.startsWith('PASTE_'));
@@ -672,13 +678,16 @@ const put=(k,v)=>{try{localStorage.setItem(k,v)}catch(e){}};
 const ja=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||d)}catch(e){return JSON.parse(d)}};
 function loadUser(){S={results:[]};PDF=null;try{S=JSON.parse(localStorage.getItem('etm'+UK)||'{"results":[]}')}catch(e){}try{PDF=JSON.parse(localStorage.getItem('etmpdf'+UK)||'null')}catch(e){}}
 async function hsh(p){try{const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('etm1:'+p));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){return 'p:'+btoa(unescape(encodeURIComponent(p)))}}
-function setMe(u){stop();ME=u;UK=u?'_'+u.id:'';loadUser();$('#pinfo').innerHTML='';showPDF();HIST=[];paintHead();go('home',true)}
-function openAuth(m){AM=m;const s=m==='signup';$('#atag').textContent=s?'Join free':'Welcome back';$('#atitle').textContent=s?'Create your account':'Log in';
+let PENDING=null;
+function setMe(u){stop();ME=u;UK=u?'_'+u.id:'';loadUser();$('#pinfo').innerHTML='';showPDF();HIST=[];paintHead();if(u&&PENDING){const f=PENDING;PENDING=null;f()}else go('home',true)}
+function showGate(){openAuth('login');$('#atag').textContent='Log in to start typing';const m=$('#amsg');m.style.color='var(--mute)';m.textContent='Create a free account or log in to start. It only takes a few seconds.'}
+function openAuth(m){AM=m;$('#ael').style.display=$('#apl').style.display='';$('#acl').style.display=$('#ares').style.display='none';$('#aplt').textContent='Password';const s=m==='signup';$('#atag').textContent=s?'Join free':'Welcome back';$('#atitle').textContent=s?'Create your account':'Log in';
  $('#anl').style.display=s?'':'none';$('#aok').textContent=s?'Sign up':'Log in';$('#aswt').textContent=s?'Already have an account?':'New here?';$('#asw').textContent=s?'Log in':'Create an account';
- $('#agoo').style.display=FB?'':'none';$('#afor').style.display=FB&&!s?'':'none';$('#amsg').textContent='';$('#auth').style.display='flex';setTimeout(()=>$(s?'#anm':'#aem').focus(),30)}
-const closeAuth=()=>{$('#auth').style.display='none';$('#apw').value=''};
+ $('#agoo').style.display=FB?'':'none';$('#afor').style.display=!s?'':'none';$('#amsg').textContent='';$('#auth').style.display='flex';setTimeout(()=>$(s?'#anm':'#aem').focus(),30)}
+const closeAuth=()=>{$('#auth').style.display='none';$('#apw').value=''},dismiss=()=>{PENDING=null;closeAuth()};
 const FE={'auth/invalid-credential':'Wrong email or password.','auth/user-not-found':'No account with this email.','auth/email-already-in-use':'This email already has an account. Log in instead.','auth/weak-password':'Use a password with at least 6 characters.','auth/popup-closed-by-user':'Google sign-in was closed.','auth/too-many-requests':'Too many tries. Wait a few minutes.','auth/network-request-failed':'No internet connection.','auth/unauthorized-domain':'This website address is not allowed yet in Firebase settings.'};
-async function submit(){const n=$('#anm').value.trim(),e=$('#aem').value.trim().toLowerCase(),p=$('#apw').value,m=$('#amsg');m.style.color='var(--bad)';
+async function submit(){if(AM==='reset1')return sendCode();if(AM==='reset2')return doReset();
+const n=$('#anm').value.trim(),e=$('#aem').value.trim().toLowerCase(),p=$('#apw').value,m=$('#amsg');m.style.color='var(--bad)';
  if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent='Enter a valid email address.';return}
  if(p.length<6){m.textContent='Use a password with at least 6 characters.';return}
  if(AM==='signup'&&!n){m.textContent='Enter your name.';return}
@@ -687,11 +696,11 @@ async function submit(){const n=$('#anm').value.trim(),e=$('#aem').value.trim().
  if(AM==='signup'){if(A[e]){m.textContent='This email already has an account. Log in instead.';return}A[e]={id:'l'+Date.now().toString(36),name:n,email:e,h,since:Date.now()};put('etm_accts',JSON.stringify(A))}
  else if(!A[e]||A[e].h!==h){m.textContent='Wrong email or password.';return}
  put('etm_session',e);closeAuth();setMe({id:A[e].id,name:A[e].name,email:e,since:A[e].since})}
-$('#bLog').onclick=()=>openAuth('login');$('#bSign').onclick=()=>openAuth('signup');$('#aclose').onclick=closeAuth;
-$('#auth').addEventListener('mousedown',e=>{if(e.target.id==='auth')closeAuth()});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth()});
+$('#bLog').onclick=()=>openAuth('login');$('#bSign').onclick=()=>openAuth('signup');$('#aclose').onclick=dismiss;
+$('#auth').addEventListener('mousedown',e=>{if(e.target.id==='auth')dismiss()});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')dismiss()});
 $('#asw').onclick=()=>openAuth(AM==='login'?'signup':'login');$('#aok').onclick=submit;
-['#aem','#apw','#anm'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')submit()}));
+['#aem','#apw','#anm','#acd'].forEach(i=>$(i).addEventListener('keydown',e=>{if(e.key==='Enter')submit()}));
 $('#avb').onclick=e=>{e.stopPropagation();const o=$('#menu').classList.toggle('open');$('#avb').setAttribute('aria-expanded',o)};
 document.addEventListener('click',e=>{if(!e.target.closest('#user'))$('#menu').classList.remove('open')});
 $('#mOut').onclick=()=>{if(FB)au.signOut();else{try{localStorage.removeItem('etm_session')}catch(e){}setMe(null)}};
@@ -700,6 +709,33 @@ if(FB){firebase.initializeApp(FIREBASE_CONFIG);au=firebase.auth();
  $('#afor').onclick=()=>{const e=$('#aem').value.trim();if(!e){$('#amsg').textContent='Type your email above first.';return}au.sendPasswordResetEmail(e).then(()=>{$('#amsg').style.color='var(--ok)';$('#amsg').textContent='Password reset email sent.'}).catch(x=>{$('#amsg').textContent=FE[x.code]||'Something went wrong.'})};
  au.onAuthStateChanged(u=>setMe(u?{id:u.uid,name:u.displayName||'',email:u.email||'',since:u.metadata&&Date.parse(u.metadata.creationTime)}:null))}
 else{const se=localStorage.getItem('etm_session'),A=ja('etm_accts','{}');if(se&&A[se])setMe({id:A[se].id,name:A[se].name,email:se,since:A[se].since})}
+// ---- forgot password: 6-digit code by email (EmailJS), for accounts saved on this device ----
+const EJ={service:"PASTE_EMAILJS_SERVICE_ID",template:"PASTE_EMAILJS_TEMPLATE_ID",key:"PASTE_EMAILJS_PUBLIC_KEY"},ejOk=()=>![EJ.service,EJ.template,EJ.key].some(v=>v.startsWith('PASTE_'));
+let OTP=null,RE='';
+function openReset(step){const em=$('#aem').value;openAuth('login');$('#aem').value=em;AM='reset'+step;const m=$('#amsg'),two=step===2;
+ $('#atag').textContent='Reset password';$('#atitle').textContent=two?'Enter the code':'Forgot your password?';
+ $('#ael').style.display=two?'none':'';$('#acl').style.display=$('#apl').style.display=two?'':'none';$('#aplt').textContent='New password';
+ $('#aok').textContent=two?'Reset password':'Send code';$('#aswt').textContent='Remembered it?';$('#asw').textContent='Log in';$('#afor').style.display='none';$('#ares').style.display=two?'':'none';
+ m.style.color='var(--mute)';m.textContent=two?'We sent a 6-digit code to '+RE+'. It works for 10 minutes.':'We will email a 6-digit code to your account email.';setTimeout(()=>$(two?'#acd':'#aem').focus(),30)}
+async function sendCode(){const e=$('#aem').value.trim().toLowerCase(),m=$('#amsg');m.style.color='var(--bad)';
+ if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent='Enter a valid email address.';return}
+ if(!ejOk()){m.textContent='Email codes are not set up on this site yet.';return}
+ if(!ja('etm_accts','{}')[e]){m.textContent='No account with this email on this device.';return}
+ const code=String(100000+crypto.getRandomValues(new Uint32Array(1))[0]%900000);OTP={e,h:await hsh('otp:'+e+':'+code),exp:Date.now()+6e5,n:0};
+ $('#aok').disabled=true;m.style.color='var(--mute)';m.textContent='Sending the code...';
+ try{const r=await fetch('https://api.emailjs.com/api/v1.0/email/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({service_id:EJ.service,template_id:EJ.template,user_id:EJ.key,template_params:{to_email:e,email:e,otp:code,passcode:code,code:code,time:'10 minutes',app:'Engineering Typing Master'}})});
+  if(!r.ok)throw 0;RE=e;openReset(2)}catch(x){OTP=null;m.style.color='var(--bad)';m.textContent='Could not send the email. Check the address and try again in a moment.'}
+ $('#aok').disabled=false}
+async function doReset(){const c=$('#acd').value.trim(),p=$('#apw').value,m=$('#amsg');m.style.color='var(--bad)';
+ if(!OTP||OTP.e!==RE||Date.now()>OTP.exp){m.textContent='This code has expired. Choose Resend code to get a new one.';return}
+ if(!/^\d{6}$/.test(c)){m.textContent='Enter the 6-digit code.';return}
+ if(p.length<6){m.textContent='Use a new password with at least 6 characters.';return}
+ if(OTP.n>=5){OTP=null;m.textContent='Too many wrong tries. Choose Resend code to get a new one.';return}
+ if(await hsh('otp:'+RE+':'+c)!==OTP.h){OTP.n++;m.textContent='That code is not correct.';return}
+ const A=ja('etm_accts','{}');if(!A[RE]){m.textContent='Account not found.';return}
+ A[RE].h=await hsh(p);put('etm_accts',JSON.stringify(A));OTP=null;$('#acd').value='';openAuth('login');$('#aem').value=RE;const k=$('#amsg');k.style.color='var(--ok)';k.textContent='Password updated. Log in with your new password.'}
+(function(){const f=$('#afor').onclick;$('#afor').onclick=()=>{if(FB&&f)f();else openReset(1)}})();
+$('#ares').onclick=()=>openReset(1);
 paintHead();
 renderHome();
 </script>
